@@ -13,10 +13,11 @@ IndelNumber=${2}
 FarJuncDir=${3}
 BOWTIEPARAM=${4}
 REG_INDEL_INDICES=${5}
+TASK_ID=${6}
 
 
 STEMFILE=${3}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 glmReportsDir=${1}circReads/glmReports/
 unalignedDir=${1}orig/unaligned/

@@ -8,9 +8,10 @@
 
 SORTINGDIR=${1}
 FJDir=${2}
+TASK_ID=${3}
 
 StemFile=${2}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${StemFile}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${StemFile}`
 
 if [ "$(ls -A ${1}/sorted_*${STEM}*)"=2 ]
 then

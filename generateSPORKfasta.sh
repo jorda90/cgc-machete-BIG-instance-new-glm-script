@@ -10,11 +10,12 @@ KNIFEOUTPUTDIR=${1}
 SPORKDIR=${2}
 NUMBASES=${3}
 SPORK_INSTALL_DIR=${4}
+TASK_ID=${5}
 
 cd ${4}
 
 STEMFILE=${2}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 #STEM=Fetal_Adrenal_360_CTTGTA_L006
 
 MODE="complete"

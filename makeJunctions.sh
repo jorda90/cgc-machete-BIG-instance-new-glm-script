@@ -17,10 +17,11 @@ PICKLEDIR=${1}  ## Python pickle storing sequence/ exon name / exon location inf
 FJFile=${2}  ## MACHETE output directory
 Chromosome=${3}  ## the chromosome number of the input file
 INSTALLDIR=${4} ## the directory where MACHETE is installed.
+TASK_ID=${5}
 
 STEMFILE=${2}StemList.txt
 FASTADIR=${2}fasta/
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 OUTPUTDIR=${FASTADIR}${STEM}/
 mkdir -p ${OUTPUTDIR}

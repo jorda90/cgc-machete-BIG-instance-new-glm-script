@@ -10,9 +10,10 @@
 FJDir=${1}
 NumIndels=${2}
 INSTALLDIR=${3}
+TASK_ID=${4}
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 InputFile=${1}fasta/${STEM}_FarJunctions.fa
 if [ ! -e ${InputFile} ]

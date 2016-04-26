@@ -10,13 +10,15 @@ FarJuncDir=${1}
 GLMReportDir=${2}
 INSTALLDIR=${3}
 FJGLMReportsDir=${4}
+TASK_ID=${5}
+
 if [ $# -ge 5 ]
 then
 OUTPUTDIR="-o ${5}"
 fi
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ##ml load python/2.7.5
 

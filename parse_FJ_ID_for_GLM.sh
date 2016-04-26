@@ -11,11 +11,13 @@
 ###
 
 FJDir=${1} # MACHETE output dir
+TASK_ID=${2}
+
 GLM_class_inputs=${1}GLM_classInput/
 
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 FJ_Outputfile=${GLM_class_inputs}${STEM}_1__output_FJ.txt
 

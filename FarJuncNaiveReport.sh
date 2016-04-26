@@ -15,9 +15,10 @@ FJDir=${1} ## MACHETE output dir
 OrigDir=${2} ## KNIFE alignment files
 Window=${3} ## Num bases that read must overlap junction to be considered
 INSTALLDIR=${4} ## MACHETE installation directory
+TASK_ID=${6}
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ## FarJuncNaiveReport.py sequentially opens the far junctions read 1 and 2 alignments, genome read 1 and 2 alignments, reg (linear junction) 1 and 2 alignments, junc (scrambled junction) 1 and 2 alignments, and the unaligned files.
 ## Alignments are designated as "true" or "false".  All true alignments are used to calculate naive p values using the read length and the alignment score.  Using an estimated mismatch rate of 0.01 (per Illumina specifications), the mismatch rate is compared to the estimated mismatch rate using a Poisson cdf.

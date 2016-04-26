@@ -14,9 +14,10 @@
 
 FJDir=${1}  ## MACHETE output dir
 INSTALLDIR=${2} ## MACHETE installation file (so python script can run)
+TASK_ID=${3}
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 mkdir -p ${1}DistantPEFiles/${STEM}
 

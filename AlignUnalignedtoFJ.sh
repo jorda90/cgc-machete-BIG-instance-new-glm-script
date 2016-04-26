@@ -10,9 +10,10 @@
 
 FJDir=${1}  ## MACHETE output dir
 OrigDir=${2} ## KNIFE alignment directories
+TASK_ID=${3}
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 STILL_UNALIGNED_DIR=${1}FarJuncSecondary/${STEM}/
 
 BOWTIE_INDEX=${1}BowtieIndex/${STEM}/${STEM}_FJ_Index

@@ -11,7 +11,9 @@
 
 FJDir=${1} ## MACHETE output directory
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+TASK_ID=${2}
+
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 DIR_TO_SORT=${1}DistantPEFiles/${STEM}/
 

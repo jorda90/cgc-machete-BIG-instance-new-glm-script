@@ -15,7 +15,9 @@ FJDir=${1} #MACHETE output directory
 
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+TASK_ID=${2}
+
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ChrFastaDir=${1}fasta/${STEM}/
 BigFastaDir=${1}fasta/

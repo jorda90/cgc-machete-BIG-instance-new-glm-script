@@ -11,13 +11,14 @@ STEMFILE=${3}
 RSCRIPT=${4}
 FJDIR=${5}
 LINEARGLMDIR=${6}
+TASK_ID=${7}
 
 #echo ${4}
 
 #testing mode
 #RSCRIPT=GLM_script_Mar22_UseIndel.r
 #STEM="SRR1027190"
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 
 

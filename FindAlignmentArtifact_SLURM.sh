@@ -14,9 +14,10 @@ FJFile=${1}
 NumBParoundJunc=${2}
 NumIndels=${3}
 INSTALLDIR=${4}
+TASK_ID=${5}
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 #module load python/2.7.5
 

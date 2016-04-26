@@ -11,9 +11,10 @@ FastaDir=${1}
 IndelNumber=${2}
 BowtieIndexDir=${3}
 FJDir=${4}
+TASK_ID=${5}
 
 STEMFILE=${4}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 mkdir -p ${3}${STEM}
 

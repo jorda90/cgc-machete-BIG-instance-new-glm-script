@@ -12,9 +12,10 @@
 CirclePipeDir=${1}
 FJDir=${2}
 INSTALLDIR=${3}
+TASK_ID=${4}
 
 STEMFILE=${2}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ##ml load python/2.7.5
 python ${3}KNIFEglmReportsForMachete.py -c ${1} -f ${2} -s ${STEM}

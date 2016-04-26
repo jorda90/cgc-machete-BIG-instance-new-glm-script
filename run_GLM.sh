@@ -8,17 +8,19 @@
 CircularPipelineDir=${1} #directory that contains circReads, orig, logs, etc
 FJDir=${2}
 INSTALLDIR=${3}
+TASK_ID=${4}
 
-if [ $# -ge 4 ]
+
+if [ $# -ge 5 ]
 then
-OUTPUTDIR=${4}
+OUTPUTDIR=${5}
 else
 OUTPUTDIR=${2}reports/glmReports/
 fi
 echo $OUTPUTDIR
 
 STEMFILE=${2}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 #STEM=SRR1594021
 
 REG_INPUTDIR=${1}circReads/ids/

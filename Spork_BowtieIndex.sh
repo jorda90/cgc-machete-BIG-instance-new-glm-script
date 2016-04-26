@@ -11,7 +11,9 @@
 SPORKdir=${1}
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+TASK_ID=${2}
+
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 mkdir -p ${1}BowtieIndex/${STEM}/
 
 BowtieIndex=${1}BowtieIndex/${STEM}/${STEM}_FJ_Index

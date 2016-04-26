@@ -15,12 +15,13 @@ FJDir=${1} # FJ Dir
 circpipedir=${2}
 WINDOW=${3}
 INSTALLDIR=${4}
+TASK_ID=${5}
 
 origDir=${2}orig/
 circReads=${2}circReads/
 
 STEMFILE=${1}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 #### TESTING
 #STEM=SRR1027188

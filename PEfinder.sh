@@ -16,9 +16,10 @@ OrigDir=${1}  # KNIFE alignment dir
 FJDir=${2} ## MACHETE output dir
 BP_distance=${3} # user defined # base pairs after which reads would be considred discordant - currently using 100Kb
 INSTALLDIR=${4} ## MACHETE's installation directory - so the python file can be found.
+TASK_ID=${5}
 
 STEMFILE=${2}StemList.txt
-STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
+STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ##module load python/2.7.9
 ##ml load python/2.7.5
