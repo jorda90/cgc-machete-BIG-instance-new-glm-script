@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  AppendNaiveRept.sh
 #  
@@ -18,7 +18,7 @@ fi
 STEMFILE=${1}StemList.txt
 STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
 
-ml load python/2.7.5
+##ml load python/2.7.5
 
 python ${INSTALLDIR}AppendNaiveRept.py -f ${1} -g ${2} -s ${STEM} -G ${4} ${OUTPUTDIR}
 

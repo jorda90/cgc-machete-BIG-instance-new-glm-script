@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 #  MakeIndelFiles.sh
 #  
 #
@@ -22,7 +22,7 @@ fi
 
 mkdir -p ${1}FarJuncIndels/${STEM}/
 
-ml load python/2.7.5
+##ml load python/2.7.5
 python ${INSTALLDIR}AddIndelsToFasta.py -i ${InputFile} -o ${1}FarJuncIndels/${STEM}/ -s ${STEM} -n ${2}
 
 echo "MakeIndelFiles.sh done -- check for ${1}FarJuncIndels/${STEM}/${STEM}_FJ_indels_*.fa where * = the numbers 1-5" >> ${1}MasterError.txt

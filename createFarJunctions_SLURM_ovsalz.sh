@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 ## This shell is the entirety of the MACHETE.
 ## it takes KNIFE input, a reference genome, and some user parameters, and outputs junctions
@@ -107,7 +107,7 @@ if [ -e ${2}StemList.txt ]
 then
 echo "using existing StemList.txt"
 else
-ml load python/2.7.5
+##ml load python/2.7.5
 echo "generating StemList.txt from KNIFE output directory filenames"
 python ${INSTALLDIR}writeStemIDFiles.py -o ${ORIG_DIR} -f ${2}
 fi

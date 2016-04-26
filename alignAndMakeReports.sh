@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  alignAndMakeReports.sh
 #  THIS IS THE BIG WRAPPER

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  alignMkRprtsBowtie.sh
 #  Don't call this one - this is a script that is called by AlignAndMakeReports.sh
@@ -12,10 +12,10 @@ NUMBASESAROUNDJUNC=${3}
 
 ## Align the previously "unaligned" reads to my Far Junctions index.
 
-# module load sratoolkit/2.4.2
-module load python/2.7.9
-module load bowtie/2.2.4
-# ml load python/2.7.5
+# #module load sratoolkit/2.4.2
+#module load python/2.7.9
+#module load bowtie/2.2.4
+# #ml load python/2.7.5
 
 
 UNALIGNEDDIR=${1}unaligned/

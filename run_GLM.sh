@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  run_GLM.sh
 #  
@@ -46,7 +46,7 @@ do
 FJIndel_input=${file}
 done
 
-ml load R/3.0.2
+#ml load R/3.0.2
 Rscript ${INSTALLDIR}GLM_script_Apr22_UseIndel.r ${FJ_input} ${reg_class_input} ${STEM} ${OUTPUTDIR} ${RegIndel_input} ${FJIndel_input}
 #Rscript ${INSTALLDIR}GLM_script.r ${FJ_input} ${class_input} ${RegIndel_input} ${FJIndel_input} ${STEM} ${OUTPUTDIR}
 

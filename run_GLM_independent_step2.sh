@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  run_GLM.sh
 #  
@@ -43,7 +43,7 @@ do
 FJIndel_input=${file}
 done
 
-ml load R/3.0.2
+#ml load R/3.0.2
 
 if [[ "$RSCRIPT" = *UseIndel* ]]
 then

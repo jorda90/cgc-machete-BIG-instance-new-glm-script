@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  BowtieAligner.batch.sh
 #  
@@ -12,7 +12,7 @@ fastqfile=${3}
 BOWTIEOUTPUTDIR=${4}
 OUTPUTFILE=${5}
 
-module load bowtie/2.2.4
+#module load bowtie/2.2.4
 
 echo "bowtie2 ${1} -x ${2} -U ${3} -S ${4}${5}"
 

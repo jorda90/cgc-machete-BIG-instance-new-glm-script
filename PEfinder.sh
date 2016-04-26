@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  PEfinder_genomeAndReg_ENCODE.sh
 #  
@@ -20,8 +20,8 @@ INSTALLDIR=${4} ## MACHETE's installation directory - so the python file can be 
 STEMFILE=${2}StemList.txt
 STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
 
-#module load python/2.7.9
-ml load python/2.7.5
+##module load python/2.7.9
+##ml load python/2.7.5
 
 ## If, for example, a read pair was found to be discordant, and R1= chrA:X, R2=chrB:Y, then the distant_pairs.txt file would contain the readID and chrA:M-N, chrB:P-Q where M-N is a window of 10,000 bases on each side of X and P-Q is a window of 10,000 bases on each side of Y. The window can be set below with the -w flag.
 

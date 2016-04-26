@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 ## The main wrapper script to generate reports containing read count and statistical score for each circular or linear junction
 # detected in the data. This works on our specific deployment of a SLURM job scheduler and is intended as a template to modify to

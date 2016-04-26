@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  FindAlignmentArtifact.sh
 #  
@@ -18,7 +18,7 @@ INSTALLDIR=${4}
 STEMFILE=${1}StemList.txt
 STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
 
-module load python/2.7.5
+#module load python/2.7.5
 
 python ${INSTALLDIR}MakeIndelsHisto.py -s ${STEM} -f ${1} -w ${2} -x ${3}
 

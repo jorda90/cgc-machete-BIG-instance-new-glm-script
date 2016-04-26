@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  DistantPE_Counter_genome_ENCODE.sh
 #  
@@ -20,7 +20,7 @@ STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
 
 mkdir -p ${1}DistantPEFiles/${STEM}
 
-#module load python/2.7.9
+##module load python/2.7.9
 ml python/2.7.5
 python ${INSTALLDIR}DistantPE_Counter.py -d ${1} -s ${STEM}
 

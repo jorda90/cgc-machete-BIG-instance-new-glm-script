@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  AddIndelstoGLM.sh
 #  
@@ -16,5 +16,5 @@ INSTALLDIR=${3}
 STEMFILE=${2}StemList.txt
 STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
 
-ml load python/2.7.5
+##ml load python/2.7.5
 python ${3}KNIFEglmReportsForMachete.py -c ${1} -f ${2} -s ${STEM}

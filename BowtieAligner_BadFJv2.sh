@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  BowtieAligner.batch.sh
 #  
@@ -8,7 +8,7 @@
 
 BOWTIEPARAM=${1}
 
-module load bowtie/2.2.4
+#module load bowtie/2.2.4
 
 
 bowtie2 ${1}

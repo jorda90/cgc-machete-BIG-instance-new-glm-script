@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 #  makeJunctions.sh
 #  
 #
@@ -26,7 +26,7 @@ OUTPUTDIR=${FASTADIR}${STEM}/
 mkdir -p ${OUTPUTDIR}
 INPUTDIR=${2}DistantPEFiles/${STEM}/
 
-ml load python/2.7.5
+#ml load python/2.7.5
 for file in ${INPUTDIR}/sorted_chr${3}_*; do
 python ${INSTALLDIR}makeJunctions.py -p ${1} -f ${file} -o ${OUTPUTDIR} -s ${STEM}
 done;

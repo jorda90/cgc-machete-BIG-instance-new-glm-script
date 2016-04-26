@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  parse_FJ_ID_for_GLM.sh
 #  

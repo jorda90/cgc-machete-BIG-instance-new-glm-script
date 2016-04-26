@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eu
 
 #  FarJuncNaiveReport.sh
 #  
@@ -29,7 +29,7 @@ STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
 ## all reads where R1 or R2 was in FJ and the partner is in none of the above are tagged as "unmapped".  One caveat - if a read was found in any of the junctional alignment files (FJ, reg, or junc) but did not overlap the junction by the below specified overlap (-w ${3}) then that read is not considered.  For example, for FJ R1 that did overlap the junction by the desired number of bases and genome R2 that did NOT overlap the junction by the desired number of bases, the script would continue to search for R2 in reg, junc, and unaligned.  If the R2 does not occur in any of those other alignment files, then R2 would be labeled "unmapped" even though it technically did map to a genome alignment.
 ## output files are in FJDir/reports/<STEM>_naive_report.txt for P values and total numbers of true and false reads (Designated by genome, genome anomaly, reg, reg anomaly, etc), and individual read IDs and partners and their information are output into FJDir/reports/IDs_<STEM>.txt
 
-ml load python/2.7.5
+##ml load python/2.7.5
 python ${INSTALLDIR}FarJuncNaiveReport.py -s ${STEM} -f ${1} -i ${2} -w ${3}
 
 echo "FarJuncNaiveRept.sh complete for ${STEM} - check for ${1}reports/${STEM}_naive_report.txt and ${1}reports/IDs_${STEM}.txt" >> ${1}MasterError.txt
