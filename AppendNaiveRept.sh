@@ -17,11 +17,11 @@ then
 OUTPUTDIR="-o ${5}"
 fi
 
-STEMFILE=${1}StemList.txt
+STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ##ml load python/2.7.5
 
-python ${INSTALLDIR}AppendNaiveRept.py -f ${1} -g ${2} -s ${STEM} -G ${4} ${OUTPUTDIR}
+python ${INSTALLDIR}/AppendNaiveRept.py -f ${1} -g ${2} -s ${STEM} -G ${4} ${OUTPUTDIR}
 
-echo "AppendNaiveReports.sh completed for ${STEM} -- check ${1}reports/AppendedReports/${STEM}_naive_report_Appended.txt.    This is the last step of the MACHETE."  >> ${1}MasterError.txt
+echo "AppendNaiveReports.sh completed for ${STEM} -- check ${1}/reports/AppendedReports/${STEM}_naive_report_Appended.txt.    This is the last step of the MACHETE."  >> ${1}/MasterError.txt

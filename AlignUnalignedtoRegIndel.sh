@@ -16,24 +16,24 @@ REG_INDEL_INDICES=${5}
 TASK_ID=${6}
 
 
-STEMFILE=${3}StemList.txt
+STEMFILE=${3}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
-glmReportsDir=${1}circReads/glmReports/
-unalignedDir=${1}orig/unaligned/
-AlignedIndels=${1}orig/RegIndelAlignments/${STEM}/
+glmReportsDir=${1}/circReads/glmReports/
+unalignedDir=${1}/orig/unaligned/
+AlignedIndels=${1}/orig/RegIndelAlignments/${STEM}/
 mkdir -p ${AlignedIndels}
 
-IndelIndex="${5}hg19_junctions_reg_indels_${2}"
+IndelIndex="${5}/hg19_junctions_reg_indels_${2}"
 
 if [ "$(ls -A ${AlignedIndels}unaligned_${STEM}_*_indel${2}.sam)" ]
 then
-    echo "Reg Alignments to ${STEM} exist, skipping step" >> ${3}MasterError.txt
+    echo "Reg Alignments to ${STEM} exist, skipping step" >> ${3}/MasterError.txt
 else
     for file in ${unalignedDir}*${STEM}*.fq
     do
     FILENAME=$(basename $file .fq)
     bowtie2 ${BOWTIEPARAM} -x ${IndelIndex} -U ${file} -S ${AlignedIndels}${FILENAME}_indel${2}.sam
     done
-    echo "AlignUnalignedtoRegIndel.sh complete for ${STEM} - check ${AlignedIndels}unaligned_${STEM}_*_indel${2}.sam" >> ${3}MasterError.txt
+    echo "AlignUnalignedtoRegIndel.sh complete for ${STEM} - check ${AlignedIndels}unaligned_${STEM}_*_indel${2}.sam" >> ${3}/MasterError.txt
 fi

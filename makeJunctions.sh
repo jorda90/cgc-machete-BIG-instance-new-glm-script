@@ -19,22 +19,22 @@ Chromosome=${3}  ## the chromosome number of the input file
 INSTALLDIR=${4} ## the directory where MACHETE is installed.
 TASK_ID=${5}
 
-STEMFILE=${2}StemList.txt
-FASTADIR=${2}fasta/
+STEMFILE=${2}/StemList.txt
+FASTADIR=${2}/fasta/
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
-OUTPUTDIR=${FASTADIR}${STEM}/
+OUTPUTDIR=${FASTADIR}/${STEM}/
 mkdir -p ${OUTPUTDIR}
-INPUTDIR=${2}DistantPEFiles/${STEM}/
+INPUTDIR=${2}/DistantPEFiles/${STEM}/
 
 #ml load python/2.7.5
 for file in ${INPUTDIR}/sorted_chr${3}_*; do
-python ${INSTALLDIR}makeJunctions.py -p ${1} -f ${file} -o ${OUTPUTDIR} -s ${STEM}
+python ${INSTALLDIR}/makeJunctions.py -p ${1} -f ${file} -o ${OUTPUTDIR} -s ${STEM}
 done;
 
 
 ## FJDir/<STEM>_ChrA_FarJunction_duplicates.fa exists because when extracting the sequence/name/location from the pickles, it's faster just to generate the output than to search a dictionary for the previous existence of the same exon pair and sequence.  The python file then parses the output files and removes duplicate fasta entries.  After duplicates are removed, the intermediate ChrA_FarJunction_duplicates.fa file is also removed by the shell.
-rm ${OUTPUTDIR}${STEM}_chr${3}_*_duplicates.fa
+rm ${OUTPUTDIR}/${STEM}_chr${3}_*_duplicates.fa
 
 
-echo "makeJunctions.sh completed for ${STEM}" >> ${2}MasterError.txt
+echo "makeJunctions.sh completed for ${STEM}" >> ${2}/MasterError.txt

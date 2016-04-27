@@ -17,13 +17,13 @@ WINDOW=${3}
 INSTALLDIR=${4}
 TASK_ID=${5}
 
-origDir=${2}orig/
-circReads=${2}circReads/
+origDir=${2}/orig/
+circReads=${2}/circReads/
 
-STEMFILE=${1}StemList.txt
+STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ##ml load python/2.7.5
-python ${INSTALLDIR}FJIndels_ClassIDFile.py -s ${STEM} -c ${circReads} -f ${FJDir} -i ${origDir} -w ${WINDOW}
+python ${INSTALLDIR}/FJIndels_ClassIDFile.py -s ${STEM} -c ${circReads} -f ${FJDir} -i ${origDir} -w ${WINDOW}
 
-echo "FJIndelsClassID.sh complete for ${STEM} - check ${FJDir}GLM_classInput/${STEM}_output_FJIndels.txt" >> ${1}MasterError.txt
+echo "FJIndelsClassID.sh complete for ${STEM} - check ${FJDir}GLM_classInput/${STEM}_output_FJIndels.txt" >> ${1}/MasterError.txt

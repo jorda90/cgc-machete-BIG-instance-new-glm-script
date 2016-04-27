@@ -16,5 +16,5 @@ INSTALLDIR=${4}
 ##ml load python/2.7.5
 python ${4}SplitFastaforBadFJ.py -i ${FarJuncFasta} -l 40 -o ${BadFJDir}
 
-echo "Fasta sequences split into 40bp reads - LenientBadFJ_SLURM.sh complete for ${STEM}" >> ${3}MasterError.txt
-echo "Unable to tell if BadFJ and BadFJ ver2 alignments complete. Please check ${1}BadFJ/${STEM} and ${1}/BadFJ_ver2/${STEM} to see if empty if Appended Reports fail without other failures" >> ${3}MasterError.txt
+echo "Fasta sequences split into 40bp reads - LenientBadFJ_SLURM.sh complete for ${STEM}" >> ${3}/MasterError.txt
+echo "Unable to tell if BadFJ and BadFJ ver2 alignments complete. Please check ${1}BadFJ/${STEM} and ${1}/BadFJ_ver2/${STEM} to see if empty if Appended Reports fail without other failures" >> ${3}/MasterError.txt

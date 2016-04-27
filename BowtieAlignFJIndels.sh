@@ -14,13 +14,13 @@ BOWTIEPARAMETERS=${2}
 IndelNum=${3}
 TASK_ID=${4}
 
-STEMFILE=${1}StemList.txt
+STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
-InputFQDir=${1}FarJuncSecondary/${STEM}/
-OutputDir=${1}FarJuncSecondary/AlignedIndels/${STEM}/
+InputFQDir=${1}/FarJuncSecondary/${STEM}/
+OutputDir=${1}/FarJuncSecondary/AlignedIndels/${STEM}/
 mkdir -p ${OutputDir}
-Index=${1}BowtieIndels/${STEM}/${STEM}_Indels_${3}
+Index=${1}/BowtieIndels/${STEM}/${STEM}_Indels_${3}
 
 # bowtie2 <options> -x <index> -U <fq files> -S <sam output>
 
@@ -30,4 +30,4 @@ FILENAME=$(basename "$file" .fq)
 bowtie2 ${2} -x ${Index} -U ${file} -S ${OutputDir}${FILENAME}_indels${3}.sam
 done
 
-echo "BowtieAlignFJIndels.sh complete- check for ${1}FarJunctionSecondary/AlignedIndels/${STEM}/still_unaligned_${STEM}_indels${3}.sam" >> ${1}MasterError.txt
+echo "BowtieAlignFJIndels.sh complete- check for ${1}FarJunctionSecondary/AlignedIndels/${STEM}/still_unaligned_${STEM}_indels${3}.sam" >> ${1}/MasterError.txt

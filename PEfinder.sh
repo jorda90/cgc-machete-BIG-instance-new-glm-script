@@ -18,7 +18,7 @@ BP_distance=${3} # user defined # base pairs after which reads would be considre
 INSTALLDIR=${4} ## MACHETE's installation directory - so the python file can be found.
 TASK_ID=${5}
 
-STEMFILE=${2}StemList.txt
+STEMFILE=${2}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ##module load python/2.7.9
@@ -26,7 +26,7 @@ STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ## If, for example, a read pair was found to be discordant, and R1= chrA:X, R2=chrB:Y, then the distant_pairs.txt file would contain the readID and chrA:M-N, chrB:P-Q where M-N is a window of 10,000 bases on each side of X and P-Q is a window of 10,000 bases on each side of Y. The window can be set below with the -w flag.
 
-python ${INSTALLDIR}PEfinder.py -o ${1} -s ${STEM} -f ${2} -w 10000 -n ${3}
+python ${INSTALLDIR}/PEfinder.py -o ${1} -s ${STEM} -f ${2} -w 10000 -n ${3}
 
-echo "PEfinder.sh step completed for ${STEM}" >> ${2}MasterError.txt
+echo "PEfinder.sh step completed for ${STEM}" >> ${2}/MasterError.txt
 

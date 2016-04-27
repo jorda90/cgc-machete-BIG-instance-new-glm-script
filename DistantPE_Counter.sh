@@ -16,13 +16,13 @@ FJDir=${1}  ## MACHETE output dir
 INSTALLDIR=${2} ## MACHETE installation file (so python script can run)
 TASK_ID=${3}
 
-STEMFILE=${1}StemList.txt
+STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
-mkdir -p ${1}DistantPEFiles/${STEM}
+mkdir -p ${1}/DistantPEFiles/${STEM}
 
 ##module load python/2.7.9
 ml python/2.7.5
-python ${INSTALLDIR}DistantPE_Counter.py -d ${1} -s ${STEM}
+python ${INSTALLDIR}/DistantPE_Counter.py -d ${1} -s ${STEM}
 
-echo "DistantPE_counter completed for ${STEM}" >> ${1}MasterError.txt
+echo "DistantPE_counter completed for ${STEM}" >> ${1}/MasterError.txt

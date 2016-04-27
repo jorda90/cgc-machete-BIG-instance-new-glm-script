@@ -10,7 +10,7 @@ SORTINGDIR=${1}
 FJDir=${2}
 TASK_ID=${3}
 
-StemFile=${2}StemList.txt
+StemFile=${2}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${StemFile}`
 
 if [ "$(ls -A ${1}/sorted_*${STEM}*)"=2 ]
@@ -23,10 +23,10 @@ else
     SORTEDNAME=sorted_${FILENAME}
         if ! [[ "$FILENAME" = *sorted* ]]
         then
-        head -n 2 ${file} > ${SORTINGDIR}${SORTEDNAME}
-        tail -n +3 ${file} | sort -k 1 >> ${SORTINGDIR}${SORTEDNAME}
+        head -n 2 ${file} > ${SORTINGDIR}/${SORTEDNAME}
+        tail -n +3 ${file} | sort -k 1 >> ${SORTINGDIR}/${SORTEDNAME}
         fi
     done;
 fi
 
-echo "completed Sorting step for all files in ${1}" >> ${2}MasterError.txt
+echo "completed Sorting step for all files in ${1}" >> ${2}/MasterError.txt

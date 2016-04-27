@@ -16,11 +16,11 @@ NumIndels=${3}
 INSTALLDIR=${4}
 TASK_ID=${5}
 
-STEMFILE=${1}StemList.txt
+STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 #module load python/2.7.5
 
-python ${INSTALLDIR}MakeIndelsHisto.py -s ${STEM} -f ${1} -w ${2} -x ${3}
+python ${INSTALLDIR}/MakeIndelsHisto.py -s ${STEM} -f ${1} -w ${2} -x ${3}
 
-echo "FindAlignmentArtifact_SLURM.sh complete - check for ${1}IndelsHistogram/indels_${STEM}_*.txt" >> ${1}MasterError.txt
+echo "FindAlignmentArtifact_SLURM.sh complete - check for ${1}IndelsHistogram/indels_${STEM}_*.txt" >> ${1}/MasterError.txt

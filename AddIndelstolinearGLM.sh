@@ -14,8 +14,10 @@ FJDir=${2}
 INSTALLDIR=${3}
 TASK_ID=${4}
 
-STEMFILE=${2}StemList.txt
+STEMFILE=${2}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ##ml load python/2.7.5
-python ${3}KNIFEglmReportsForMachete.py -c ${1} -f ${2} -s ${STEM}
+python ${3}/KNIFEglmReportsForMachete.py -c ${1} -f ${2} -s ${STEM}
+
+echo "AddIndelstoLinearGLM.sh completed for ${STEM} -- check ${1}/reports/AppendedReports/${STEM} for parsed KNIFE circular and linear reports."  >> ${2}/MasterError.txt

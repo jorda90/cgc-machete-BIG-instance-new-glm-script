@@ -17,10 +17,10 @@ WINDOW=${3}
 INSTALLDIR=${4}
 TASK_ID=${5}
 
-origDir=${2}orig/
-circReads=${2}circReads/
+origDir=${2}/orig/
+circReads=${2}/circReads/
 
-STEMFILE=${1}StemList.txt
+STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 #### TESTING
@@ -33,8 +33,8 @@ echo "RegIndel class input file exists, skipping step"
 else
 
 ##ml load python/2.7.5
-python ${INSTALLDIR}RegIndels_ClassIDFile.py -s ${STEM} -c ${circReads} -i ${origDir} -w ${WINDOW}
+python ${INSTALLDIR}/RegIndels_ClassIDFile.py -s ${STEM} -c ${circReads} -i ${origDir} -w ${WINDOW}
 
-echo "RegIndelsClassID.sh complete for ${STEM} -- check ${circReads}/ids/${STEM}_output_RegIndel.txt" >> ${1}MasterError.txt
+echo "RegIndelsClassID.sh complete for ${STEM} -- check ${circReads}/ids/${STEM}_output_RegIndel.txt" >> ${1}/MasterError.txt
 
 fi

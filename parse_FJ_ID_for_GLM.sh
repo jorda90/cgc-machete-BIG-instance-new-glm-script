@@ -13,17 +13,17 @@
 FJDir=${1} # MACHETE output dir
 TASK_ID=${2}
 
-GLM_class_inputs=${1}GLM_classInput/
+GLM_class_inputs=${1}/GLM_classInput/
 
 
-STEMFILE=${1}StemList.txt
+STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 FJ_Outputfile=${GLM_class_inputs}${STEM}_1__output_FJ.txt
 
-for file in ${1}reports/IDs*${STEM}*.txt
+for file in ${1}/reports/IDs*${STEM}*.txt
 do
 sed '1d' ${file} | grep -v "Unmapped\|unaligned" > ${FJ_Outputfile}
 done
 
-echo "parse_FJ_ID_for_GLM.sh complete for ${STEM} - check for ${GLM_class_inputs}${STEM}__output_FJ.txt" >> ${1}MasterError.txt
+echo "parse_FJ_ID_for_GLM.sh complete for ${STEM} - check for ${GLM_class_inputs}${STEM}__output_FJ.txt" >> ${1}/MasterError.txt

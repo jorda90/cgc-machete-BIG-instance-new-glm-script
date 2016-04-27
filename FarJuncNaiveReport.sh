@@ -17,7 +17,7 @@ Window=${3} ## Num bases that read must overlap junction to be considered
 INSTALLDIR=${4} ## MACHETE installation directory
 TASK_ID=${6}
 
-STEMFILE=${1}StemList.txt
+STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ## FarJuncNaiveReport.py sequentially opens the far junctions read 1 and 2 alignments, genome read 1 and 2 alignments, reg (linear junction) 1 and 2 alignments, junc (scrambled junction) 1 and 2 alignments, and the unaligned files.
@@ -31,6 +31,6 @@ STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 ## output files are in FJDir/reports/<STEM>_naive_report.txt for P values and total numbers of true and false reads (Designated by genome, genome anomaly, reg, reg anomaly, etc), and individual read IDs and partners and their information are output into FJDir/reports/IDs_<STEM>.txt
 
 ##ml load python/2.7.5
-python ${INSTALLDIR}FarJuncNaiveReport.py -s ${STEM} -f ${1} -i ${2} -w ${3}
+python ${INSTALLDIR}/FarJuncNaiveReport.py -s ${STEM} -f ${1} -i ${2} -w ${3}
 
-echo "FarJuncNaiveRept.sh complete for ${STEM} - check for ${1}reports/${STEM}_naive_report.txt and ${1}reports/IDs_${STEM}.txt" >> ${1}MasterError.txt
+echo "FarJuncNaiveRept.sh complete for ${STEM} - check for ${1}reports/${STEM}_naive_report.txt and ${1}reports/IDs_${STEM}.txt" >> ${1}/MasterError.txt

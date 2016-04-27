@@ -12,19 +12,19 @@ NumIndels=${2}
 INSTALLDIR=${3}
 TASK_ID=${4}
 
-STEMFILE=${1}StemList.txt
+STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
-InputFile=${1}fasta/${STEM}_FarJunctions.fa
+InputFile=${1}/fasta/${STEM}_FarJunctions.fa
 if [ ! -e ${InputFile} ]
 then
-InputFile=${1}fasta/${STEM}/${STEM}_SPORK_Junctions.fa
+InputFile=${1}/fasta/${STEM}/${STEM}_SPORK_Junctions.fa
 fi
 
-mkdir -p ${1}FarJuncIndels/${STEM}/
+mkdir -p ${1}/FarJuncIndels/${STEM}/
 
 ##ml load python/2.7.5
-python ${INSTALLDIR}AddIndelsToFasta.py -i ${InputFile} -o ${1}FarJuncIndels/${STEM}/ -s ${STEM} -n ${2}
+python ${INSTALLDIR}/AddIndelsToFasta.py -i ${InputFile} -o ${1}/FarJuncIndels/${STEM}/ -s ${STEM} -n ${2}
 
-echo "MakeIndelFiles.sh done -- check for ${1}FarJuncIndels/${STEM}/${STEM}_FJ_indels_*.fa where * = the numbers 1-5" >> ${1}MasterError.txt
+echo "MakeIndelFiles.sh done -- check for ${1}FarJuncIndels/${STEM}/${STEM}_FJ_indels_*.fa where * = the numbers 1-5" >> ${1}/MasterError.txt
 
