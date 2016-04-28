@@ -36,7 +36,6 @@ parser.add_argument("USERBPDIST",help="using 100000 (100Kb) so far for testing p
 parser.add_argument("REFGENOME",help="HG19 vs HG38;could upgrade to HG38.")
 parser.add_argument("NUMBASESAROUNDJUNC",help="default for linda's is 8 for read lengths < 70 and 13 for read lengths > 70")
 parser.add_argument("NumIndels",help="current default = 5, arbitrary")
-parser.add_argument("NumBPOverlapAtJunc",help="this is different than input #5 because it is for after the indel alignment.  Current default 5+8 (8 more than the max # indels per side if default indels is 5) = 13 ; this is arbitrary.")
 
 args = parser.parse_args()
 
@@ -46,7 +45,6 @@ USERBPDIST = 100000 #args.USERBPDIST
 REFGENOME = "HG19" #args.REFGENOME
 NUMBASESAROUNDJUNC = args.NUMBASESAROUNDJUNC
 NumIndels = 5 #args.NumIndels
-NumBPOverlapAtJunc = int(NumIndels) + 8 #args.NumBPOverlapAtJunc
 
 #end arg parsing
 
@@ -87,23 +85,22 @@ os.makedirs(os.path.join(OUTPUT_DIR,"reports/AppendedReports"))
 os.mkdir(os.path.join(GLM_DIR,"AppendGLM"))
 
 subprocess.check_call("rm {LOG_DIR}/*".format(LOG_DIR),shell=True)
+subprocess.check_call("rm {LOG_DIR}/MasterError.txt".format(LOG_DIR=LOG_DIR),shell=True)
 
 subprocess.check_call("python {MACHETE}/writeStemIDFiles.py -o {ORIG_DIR} -f {OUTPUT_DIR}".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR),shell=True)
 
 # counting # of times to go through the "PE matching" step - is the number of paired genome files ending in .sam /2
-popen = subprocess.Popen("more {StemFile} | wc -l".format(StemFile=StemFile),stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
+popen = subprocess.Popen("wc -l {StemFile}".format(StemFile=StemFile),stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
 stdout,stderr = popen.communicate()
 NUM_FILES = stdout
 print(NUM_FILES)
 
-subprocess.check_call("rm {ORIG_DIR}/reg/sorted*.sam".format(ORIG_DIR=ORIG_DIR),shell=True)
-subprocess.check_call("rm {ORIG_DIR}/genome/sorted*.sam".format(ORIG_DIR=ORIG_DIR),shell=True)
 ## sorting reg files
 
 #j1_id
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/reg/ {StemFile} | awk '{print $4}".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,StemFile=StemFile)
+	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/reg/ {OUTPUT_DIR}} | awk '{print $4}".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR)
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_1sortReg.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_1sortReg.txt")
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
@@ -120,7 +117,7 @@ print("sorting reg files")
 print("sorting genome files")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/genome {StemFile} | awk '{print $4}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,StemFile=StemFile)
+	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/genome {OUTPUT_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR)
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_1sortGenome.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_1sortGenome.txt")
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
@@ -209,13 +206,19 @@ checkProcesses(processes)
 # make BadJunc directory --  bad juncs will align to genome/transcriptome/junc/reg but good juncs will not align
 #
 
+genomeIndex = os.path.join(CIRCREF,"hg19_genome")
+transcriptomeIndex = os.path.join(CIRCREF,"hg19_transcriptome")
+regIndex = os.path.join(CIRCREF,"hg19_junctions_reg")
+juncIndex = os.path.join(CIRCREF,"hg19_junctions_scrambled")
+
+
 #j7_id=
 print("Identify Bad FJ's")
 processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_6BadJunc.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_6BadJunc.txt")
-	cmd = "{MACHETE}/GoodvsBadFJ_SLURM.sh {OUTPUT_DIR} {REFGENOME} {MACHETE} {CIRCREF} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,REFGENOME=REFGENOME,CIRCREF=CIRCREF)
+	cmd = "{MACHETE}/LenientBadFJ_SLURM.sh {OUTPUT_DIR} {REFGENOME} {MACHETE} {CIRCREF} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,REFGENOME=REFGENOME,CIRCREF=CIRCREF)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
