@@ -8,11 +8,11 @@ RUN yum update -y && yum groupinstall -y 'Development Tools' && yum install -y w
 RUN mkdir /src
 #gcc-c++ needed for running g++ to make tools, such as Bowtie2
 #gcc needed for installing Python
-RUN git clone https://github.com/nathankw/KNIFE.git/ /src/knife && \
+RUN git clone https://github.com/nathankw/KNIFE.git /src/knife && \
 	cd /src/knife && \	
 	git remote add upstream https://github.com/lindaszabo/KNIFE.git && \
 	git pull
-RUN git clone https://github.com/nathankw/MACHETE.git/ /src/machete && \
+RUN git clone https://github.com/nathankw/MACHETE.git /src/machete && \
 	cd /src/machete && \
 	git remote add upstream https://github.com/gillianhsieh/MACHETE && \
 	git pull
@@ -32,7 +32,7 @@ RUN mkdir -p /src/Python /src/software/Python && \
 #INSTALL TBB (Threading Building Blocks) from Intel
 #Needed for intalling Bowtie1 and Bowtie2 with parallelism enabled (to use the -p argument).
 RUN mkdir /src/TBB && \
-	cd /src/TBB &&
+	cd /src/TBB \ &&
 	wget https://www.threadingbuildingblocks.org/sites/default/files/software_releases/source/tbb44_20160128oss_src_0.tgz && \
 	tar -zxf tbb44_20160128oss_src_0.tgz && \
 	cd tbb44_20160128oss && \
