@@ -819,6 +819,15 @@ FJ_indel_reads[, p_predicted_2:= linearDecoyGLM$family$linkinv(lwr_2)] # add low
 
 }
 
+linear_and_anomaly_and_indel_fusions=rbind(FJ_indel_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)],anomaly_fusion_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)], fusion_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)])
+
+linear_and_anomaly_and_indel_fusions$overlap=as.numeric(as.vector(linear_and_anomaly_and_indel_fusions$overlap))
+linearWithAnomalyAndIndelFusionPredictions = predictNewClassP(linear_and_anomaly_and_indel_fusions, null)
+
+consolidated_fusion=merge(fusionJunctionPredictions,linearWithAnomalyFusionPredictions , all=TRUE,by="junction")
+consolidated_fusion[,p_diff:=(p_predicted.x-p_predicted.y)] ## p_predicted.x should be less than p_predicted.y always so p_diff should be neegative
+consolidated_fusion=data.table(unique(consolidated_fusion))
+
 ####### now add indels
 #verbose adds extra output and extra info to indel table
 verbose=0
@@ -827,10 +836,18 @@ print ("now adding indels and changing names to reflect accurate terminology")
 consolidated_fusion_windel=merge(linearWithAnomalyFusionPredictions ,linearWithAnomalyAndIndelFusionPredictions, all=TRUE,by="junction")
 consolidated_fusion_windel[,p_diff_indel:=(p_predicted.y-p_predicted.x)] ## p_predicted.x should be less than p_predicted.y always so p_diff should be neegative
 consolidated_fusion_windel=data.table(unique(consolidated_fusion_windel))
+
+
 setnames(consolidated_fusion_windel,"p_predicted.x", "productPhat.x")
 setnames(consolidated_fusion_windel,"p_predicted.y", "productPhat.y")
 setnames(consolidated_fusion_windel,"p_value.x", "junction_cdf.x")
 setnames(consolidated_fusion_windel,"p_value.y", "junction_cdf.y")
+
+
+setnames(consolidated_fusion_windel,"p_predicted_2.x", "productPhat_lower.x")
+setnames(consolidated_fusion_windel,"p_predicted_2.y", "productPhat_lower.y")
+setnames(consolidated_fusion_windel,"p_value_2.x", "junction_cdf_lower.x")
+setnames(consolidated_fusion_windel,"p_value_2.y", "junction_cdf_lower.y")
 
 setnames(consolidated_fusion_windel,"p_diff_indel", "junction_cdf_windel_diff")
 if (verbose==0){
@@ -841,8 +858,8 @@ consolidated_fusion_windel[,q_2.x:=NULL]
 consolidated_fusion_windel[,logsum.x:=NULL]
 consolidated_fusion_windel[,logsum.y:=NULL]
 }
-write.table(unique(consolidated_fusion_windel)[order(-junction_cdf.y),], fusionwanomaly_and_indel_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
 
+write.table(unique(consolidated_fusion_windel)[order(-junction_cdf.y),], fusionwanomaly_and_indel_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
 
 ####################################################################################
 ####################################################################################
@@ -861,14 +878,6 @@ write.table(unique(consolidated_linear), linearwanomaly_juncp_out, row.names=FAL
 my.null.quantiles=quantile(linear_reads$p_predicted,probs=c(0:10)/10)
 ## refer fusions to these quantiles; 'falsely called' vs. true will be fraction of linears (conservative estimate) ; error at this quantile can be evaluated. 
 
-linear_and_anomaly_and_indel_fusions=rbind(FJ_indel_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)],anomaly_fusion_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)], fusion_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)])
-
-linear_and_anomaly_and_indel_fusions$overlap=as.numeric(as.vector(linear_and_anomaly_and_indel_fusions$overlap))
-linearWithAnomalyAndIndelFusionPredictions = predictNewClassP(linear_and_anomaly_and_indel_fusions, null)
-
-consolidated_fusion=merge(fusionJunctionPredictions,linearWithAnomalyFusionPredictions , all=TRUE,by="junction")
-consolidated_fusion[,p_diff:=(p_predicted.x-p_predicted.y)] ## p_predicted.x should be less than p_predicted.y always so p_diff should be neegative
-consolidated_fusion=data.table(unique(consolidated_fusion))
 
 write.table(unique(fusionJunctionPredictions[order(-p_predicted),]),fusion_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
 write.table(unique(consolidated_fusion)[order(-p_predicted.y),], fusionwanomaly_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
