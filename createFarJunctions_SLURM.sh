@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/sh
 
 ## This shell is the entirety of the MACHETE.
 ## it takes KNIFE input, a reference genome, and some user parameters, and outputs junctions
@@ -107,7 +107,7 @@ if [ -e ${2}StemList.txt ]
 then
 echo "using existing StemList.txt"
 else
-##ml load python/2.7.5
+ml load python/2.7.5
 echo "generating StemList.txt from KNIFE output directory filenames"
 python ${INSTALLDIR}writeStemIDFiles.py -o ${ORIG_DIR} -f ${2}
 fi
@@ -389,7 +389,7 @@ depend_str13="--depend=afterok"
 START=1
 for (( c=$START; c<=${NumIndels}; c++ ))
 do
-BOWTIEPARAMETERS="--no-sq --no-unal --score-min L,0,-0.24 --n-ceil L,0,1 -p 4 --rdg 50,50 --rfg 50,50"
+BOWTIEPARAMETERS="--no-sq --no-unal --score-min L,0,-0.24 --np=0 --n-ceil L,0,1 -p 4 --rdg 50,50 --rfg 50,50"
 j13_id=`sbatch -J AlignIndels ${RESOURCE_FLAG} --array=1-${NUM_FILES} --mem=80000 --nodes=8 --time=24:0:0 -o ${2}err_and_out/out_12alignindels.txt -e ${2}err_and_out/err_12alignindels.txt ${depend_str11} ${INSTALLDIR}BowtieAlignFJIndels.sh ${2} "${BOWTIEPARAMETERS}" ${c} | awk '{print $4}'`
     depend_str13=${depend_str13}:${j13_id}
 
@@ -421,7 +421,7 @@ depend_str16="--depend=afterok"
 START=1
 for (( c=$START; c<=${NumIndels}; c++ ))
 do
-BOWTIEPARAMETERS="--no-sq --no-unal --score-min L,0,-0.24 --n-ceil L,0,1 -p 4 --rdg 50,50 --rfg 50,50"
+BOWTIEPARAMETERS="--no-sq --no-unal --score-min L,0,-0.24 --np=0 --n-ceil L,0,1 -p 4 --rdg 50,50 --rfg 50,50"
 j16_id=`sbatch -J AlignRegIndels ${RESOURCE_FLAG} --array=1-${NUM_FILES}  --mem=55000 --nodes=8 --time=24:0:0 -o ${2}err_and_out/out_15AlignRegIndels.txt -e ${2}err_and_out/err_15AlignRegIndels.txt ${INSTALLDIR}AlignUnalignedtoRegIndel.sh ${1} ${c} ${2} "${BOWTIEPARAMETERS}" ${REG_INDEL_INDICES} | awk '{print $4}'`
     depend_str16=${depend_str16}:${j16_id}
 done
@@ -455,7 +455,7 @@ echo "FJ Indels Class Input: ${j19_id}"
 ## Run GLM
 ##  This calls the GLM script.  Class input files from KNIFE dir/circReads/ids/ are fed into the GLM and GLM reports are generated in FJDir/reports/glmReports.  Please see GLM documentation for additional information.
 
-j15b_id=`sbatch -J GLM.r ${RESOURCE_FLAG} --array=1-${NUM_FILES} --mem=55000 --nodes=4 --time=1:0:0 -o ${2}err_and_out/out_15GLM_r.txt -e ${2}err_and_out/err_15GLM_r.txt --depend=afterok:${j15a_id}:${j18_id}:${j19_id} ${INSTALLDIR}run_GLM.sh ${1} ${2} ${INSTALLDIR} | awk '{print $4}'`
+j15b_id=`sbatch -J GLM.r ${RESOURCE_FLAG} --array=1-${NUM_FILES} --mem=55000 --nodes=4 --time=5:0:0 -o ${2}err_and_out/out_15GLM_r.txt -e ${2}err_and_out/err_15GLM_r.txt --depend=afterok:${j15a_id}:${j18_id}:${j19_id} ${INSTALLDIR}run_GLM.sh ${1} ${2} ${INSTALLDIR} | awk '{print $4}'`
 
 echo "Run GLM: ${j15b_id}"
 
