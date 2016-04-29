@@ -301,8 +301,37 @@ for i in range(1,NUM_FILES + 1):
 		stdout = os.path.join(BadFJStemDir,"out.txt") 
 		stderr = os.path.join(BadFJStemDir,"err.txt")
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {regIndex} {SPORKFasta} {BadFJtoRegFile} | awk '{print $4}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,regIndex=regIndex,SPORKFasta=SPORKFasta,BadFJtoRegFile=BadFJtoRegFile)
-echo "BadFJ to reg: ${BadFJj3_id}"
-depend_str7=${depend_str7}:${BadFJj3_id}
+		print("BadFJ to reg")
+		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+		stdout,stderr = popen.communicate()
+		retcode = popen.returncode
+		if retcode:
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}."format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+
+
+	
+	BadFJtoJuncFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoJunc.sam")
+	if os.path.exists(BadFJtoJunc):
+		print("{BadFJtoJuncFile} exists. To realign, please manually delete this file first".format(BadFJtoJuncFile=BadFJtoJuncFile))
+	else
+		stdout = os.path.join(BadFJStemDir,"out.txt")
+		stderr = os.path.join(BadFJStemDir,"err.txt")
+		print("BadFJ to junc: ")
+		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {juncIndex} {SPORKFasta} {BadFJtoJuncFile} | awk '{print $4}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,juncIndex=juncIndex,SPORKFasta=SPORKFasta,BadFJtoJuncFile=BadFJtoJuncFile)
+		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+		stdout,stderr = popen.communicate()
+		retcode = popen.returncode
+		if retcode:
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}."format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+
+
+
+
+
+
+
+
+
 
 # align unaligned files to the FJ bowtie index
 #
