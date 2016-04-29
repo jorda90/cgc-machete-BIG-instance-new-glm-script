@@ -19,8 +19,8 @@ getOverlapForTrimmed <- function(x, juncMidpoint=150){
     } else if (as.numeric(x["pos"]) + as.numeric(x["readLen"]) - 1 < juncMidpoint + 1){
       overlap = 0
     } else {
-      overlap = min(as.numeric(x["pos"]) + as.numeric(x["readLen"]) - juncMidpoint, 
-                    juncMidpoint + 1 - as.numeric(x["pos"]))
+      overlap = min(as.numeric(x["pos"]) + as.numeric(x["readLen"]) - juncMidpoint,
+      juncMidpoint + 1 - as.numeric(x["pos"]))
     }
   
   return(overlap)
@@ -52,7 +52,6 @@ if(nrow(dt) > 0){
 
 # the input file is just the file output by the circularRNApipeline under /ids
 processClassInput <- function(classFile,my.names){
-
 
 #cats = fread(classFile,  sep="\t", nrows=1000000)
 cats = fread(classFile,  sep="\t")
@@ -201,11 +200,10 @@ setnames(junctionPredictions, paste("iter_",max.iter,sep=""), "p_predicted")
 list(saves, junctionPredictions) ## JS these are the outputs and done with function
 }
 
-####################### SECOND JS FUNCTION #############################
+
 ########################################################################
 ###################### prediction from model ##########################
 ##### as a function, needs input data and model
-## debugjunctionpredictions
 
 predictNewClassP <- function(my_reads, null){ ## need not be circ_reads, just easier syntax
 ######### up until this point, every calculation is PER READ, now we want a function to collapse 
@@ -250,7 +248,7 @@ setnames(junctionPredictions, "V1", paste("q_",qi,sep=""))
 ##################################
 
 ##  tempDT, to collapse across junctions 
-print ("HERE WAS USING simple vs. simple; changed 4/22")
+
 
 # p_predicteds are the exponentiation
 junctionPredictions [ ,p_predicted_2:=exp(logsum_2),by=junction]
@@ -278,12 +276,12 @@ lognull=log(null)
 use_mu = mean(lognull) # this is actually the mean of the read level predictions
 use_var=var(lognull)
 ## for large n, 
-print ("using threshold of ** below** for p value approximated by ")
+#print ("using cdf of null distribution as "p_value" which is misnomer for convenient and replaced below ")
 n.thresh.exact=15
 print (n.thresh.exact)
 
 junctionPredictions[ (numReads>n.thresh.exact) , p_value :=  pnorm((logsum - numReads*use_mu)/sqrt(numReads*use_var))]
-print ("DEBUGFIX")
+
 junctionPredictions[ (numReads>n.thresh.exact) , p_value_2 :=  pnorm((logsum_2 - numReads*use_mu)/sqrt(numReads*use_var))]
 
 ## make empirical distribution of posteriors:
@@ -301,13 +299,13 @@ for (tj in 2: tempN){ # loop, taking products
 sim.readps=my.dist[[tj]] +  sim.readps
 }
 }
-## PRINT: START DEBUGG!! 
+
 # convert to posterior
 ## fraction of time p_predicted is smaller than -- so if p_predicted is very large, the fraction of time it is smaller is big
 
 ## use the null to compute p_vals
 print (head(junctionPredictions))
-print (paste(tempN, "is tempn"))
+print (paste(tempN, "is value of readcount for exact calculation"))
 junctionPredictions [ (numReads == tempN ), p_value:= sum( exp(sim.readps)<p_predicted)/length(exp(sim.readps))]
 junctionPredictions [ (numReads == tempN ), p_value_2:= sum( exp(sim.readps)<p_predicted_2)/length(exp(sim.readps))]
 
@@ -322,15 +320,33 @@ return(junctionPredictions)
 
 ## command line inputs
 user.input=1
+################# USER INPUT SHOULD BE 1 if it is used in an automated script
 
 use.uconn=0
-use.normal.breast=0
-use.cml=1
+use.normal.breast=1
+use.cml=0
 use.ews=0
 use.simulated=0
 use.ewsh5=0
 
 ## GILLIAN
+
+use.spork.cml=0
+if (use.spork.cml==1){
+parentdir="/scratch/PI/horence/gillian/CML_UConn/circpipe_K562/circReads/ids/"
+srr="SRR3192409"
+reg_indel_class_input = paste(parentdir,srr,"_output_RegIndel.txt",sep="")
+class_input = paste(parentdir,srr,"_1__output.txt",sep="")
+
+parentdir="/scratch/PI/horence/julia/CML_UConnSPORK/"
+
+FJ_indel_class_input = paste(parentdir,"GLM_classInput/",srr,"_output_FJIndels.txt",sep="")
+fusion_class_input = paste(parentdir,"GLM_classInput/",srr,"_1__output_FJ.txt",sep="")
+
+output_dir=""
+sampletest="cml-spork"
+}
+
 if(use.ewsh5==1){
 parentdir="/scratch/PI/horence/alignments/EWS_FLI_bigmem/circReads/ids/"
 srr="H5-AD018"
@@ -387,12 +403,11 @@ if (use.normal.breast==1){
 parentdir="/scratch/PI/horence/gillian/normal_breast/circpipe/circReads/ids/"
 srr="SRR1027190"
 class_input = paste(parentdir,srr,"_1__output.txt",sep="")
-fusion_class_input = paste(parentdir,srr,"_1__output_FJ.txt",sep="")
-
 reg_indel_class_input = paste(parentdir,srr,"_output_RegIndel.txt",sep="")
 
-# for future-- parentdir="/scratch/PI/horence/gillian/normal_breast/FarJunc_Mar9/GLM_classInput/"
+parentdir="/scratch/PI/horence/gillian/normal_breast/FarJunc_Mar9/GLM_classInput/"
 FJ_indel_class_input = paste(parentdir,srr,"_output_FJIndels.txt",sep="")
+fusion_class_input = paste(parentdir,srr,"_1__output_FJ.txt",sep="")
 output_dir=""
 sampletest=paste("normal_breast_windel_",srr,sep="")
 }
@@ -429,7 +444,6 @@ FJ_indel_class_input = args[6]
 
 max.iter=2 ## iterations for glm
 
-## ONLYY FOR DEBUGGING
 if (user.input==0){
   output_dir=""}
 
@@ -607,13 +621,13 @@ setkey(junctionPredictions, junction)
 ## this should be a function of any two classes; and the output will be the model
 
 ## 
-print ("not using all data only 3 parameters")
+
 n.row= dim(linear_reads)[1]
 n.sample=min(n.row,10000) 
 
 #syntax example decoy_reads[,p_predicted:=NULL]
 print ("calling linear decoy model")
-linearDecoyGLMoutput = my.glm.model ( linear_reads[ sample(n.row,n.sample,replace=FALSE),], decoy_reads, 1, max.iter) ## 0 does not use R2 info JS these are the outputs and done with function
+linearDecoyGLMoutput = my.glm.model ( linear_reads[ sample(n.row,n.sample,replace=FALSE),], decoy_reads, 1, max.iter) ## 0 does not use R2 info 
 
 saves = linearDecoyGLMoutput[[1]]
 linearJunctionPredictions =  linearDecoyGLMoutput[[2]]
@@ -623,10 +637,33 @@ linearDecoyGLM = saves[[max.iter]] ##### this is the glm model
 ## after fitting the GLM to linear vs. decoy, we want to store linear junction predictions in order to subset anomalies
 ######## JS ADDITION: NOTE- NOT stratifying on permutation p value, although could add this too
 
-pGoodThresh=quantile(linearJunctionPredictions$p_predicted,prob=.8)
-good.linear=linearJunctionPredictions[p_predicted> pGoodThresh,]
-pBadThresh=quantile(linearJunctionPredictions$p_predicted,prob=.2)
-bad.linear=linearJunctionPredictions[p_predicted< pBadThresh,]
+
+############################################################################
+### START LINEARS
+################# predict on anomaly reads -- AND TEST HOW THIS IMPACTS LINEAR PREDICTIONS
+############################ linear predictions ONLY ON THE BASIS of anomalies...
+
+preds = predict(linearDecoyGLM, newdata=linear_reads, type = "link", se.fit = TRUE) 
+lwr = preds$fit - (1.96 * preds$se.fit)  # ~ lower 95% CI to be conservative 
+lwr_2 = preds$fit - 2*(1.96 * preds$se.fit)  # ~ lower 99% CI to be conservative 
+linear_reads[, p_predicted:= linearDecoyGLM$family$linkinv(lwr)] # add lower 95% CI prediction
+linear_reads[, p_predicted_2:= linearDecoyGLM$family$linkinv(lwr_2)] # add lower 95% CI prediction
+## for null
+print ("Assigning null distribution for all linear reads")
+null=linear_reads$p_predicted
+
+
+### ASSIGN p value: 
+linearJunctionPredictionsForModels = predictNewClassP(linear_reads, null)
+
+pGoodThresh=quantile(linearJunctionPredictionsForModels$p_value,prob=.8)    
+good.linear=linearJunctionPredictionsForModels[p_value> pGoodThresh,]    
+pBadThresh=quantile(linearJunctionPredictionsForModels$p_value,prob=.2)    
+bad.linear=linearJunctionPredictionsForModels[p_value< pBadThresh,]    
+#####################################
+
+
+############## done with linears
 
 # define two classes of anomalies: those from good vs. bad junctions
 good_anomaly_reads= anomaly_reads[!is.na(match(junction, good.linear$junction)),]
@@ -642,6 +679,8 @@ bad_indel_reads= reg_indel_reads[!is.na(match(junction, bad.linear$junction)),]
 if (min(dim(good_indel_reads)[1],dim(bad_indel_reads)[1])<20){ 
 print ("CHANGING TO INDELS=0 becuase too few reads")
 use.indels=0 
+#use.reg.for.indels=1
+
 }
 }
 
@@ -672,6 +711,12 @@ INDELsaves=IndelInfo[[1]]
 INDELjunctionPredictions=IndelInfo[[2]]
 IndelGLM = INDELsaves[[max.iter]] ##### this is the glm model
 }
+if (use.indels==0){
+print ("USING GLM MODEL for INDEL MODEL")
+INDELsaves = linearDecoyGLMoutput[[1]]
+INDELlinearJunctionPredictions =  linearDecoyGLMoutput[[2]]
+IndelGLM = linearDecoyGLM
+}
 
 ## save GLMS
 save(AnomalyGLM, file=anomaly_glm_out)  # save models
@@ -680,16 +725,7 @@ save(IndelGLM, file=indel_glm_out)  # save models
 }
 save(linearDecoyGLM, file=glm_out)  # save models
 
-############################################################################
-### START LINEARS
-################# predict on anomaly reads -- AND TEST HOW THIS IMPACTS LINEAR PREDICTIONS
-############################ linear predictions ONLY ON THE BASIS of anomalies...
 
-preds = predict(linearDecoyGLM, newdata=linear_reads, type = "link", se.fit = TRUE) 
-lwr = preds$fit - (1.96 * preds$se.fit)  # ~ lower 95% CI to be conservative 
-lwr_2 = preds$fit - 2*(1.96 * preds$se.fit)  # ~ lower 99% CI to be conservative 
-linear_reads[, p_predicted:= linearDecoyGLM$family$linkinv(lwr)] # add lower 95% CI prediction
-linear_reads[, p_predicted_2:= linearDecoyGLM$family$linkinv(lwr_2)] # add lower 95% CI prediction
 
 preds = predict(linearDecoyGLM, newdata=decoy_reads, type = "link", se.fit = TRUE) 
 lwr = preds$fit - (1.96 * preds$se.fit)  # ~ lower 95% CI to be conservative 
@@ -708,9 +744,7 @@ all_anomaly_reads[, p_predicted_2:= AnomalyGLM$family$linkinv(lwr_2)] # add lowe
 ## need to rbind anomaly junctions 
 linear_and_anomaly=rbind(all_anomaly_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)], linear_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)])
 
-## for null
-print ("Assigning null distribution for all linear reads")
-null=linear_reads$p_predicted
+
 
 linearWithAnomalyJunctionPredictions = predictNewClassP(linear_and_anomaly, null)
 
@@ -762,10 +796,10 @@ linearWithAnomalyFusionPredictions = predictNewClassP(linear_and_anomaly_fusions
 
 # start prediction on INDELS mapping
 print ("done with fusion anomalies starting indels")
-if (use.indels==1){
+#if (use.indels==1){
+
 FJ_indel_reads$overlap=as.numeric(as.vector(FJ_indel_reads$overlap))
-#use.indel.fit=0
-if (use.indels==1){
+
 preds = predict(IndelGLM, newdata=FJ_indel_reads, type = "link", se.fit = TRUE) 
 lwr = preds$fit - (1.96 * preds$se.fit)  # ~ lower 95% CI to be conservative 
 lwr_2 = preds$fit - 2*(1.96 * preds$se.fit)  # ~ lower 99% CI to be conservative 
@@ -774,44 +808,45 @@ FJ_indel_reads[, p_predicted:= IndelGLM$family$linkinv(lwr)] # add lower 95% CI 
 FJ_indel_reads[, p_predicted_2:= IndelGLM$family$linkinv(lwr_2)] # add lower 95% CI prediction
 }
 if (use.indels==0){
-preds = predict(AnomalyGLM, newdata=FJ_indel_reads, type = "link", se.fit = TRUE) 
+
+## if not using indels, we assign indel reads according to the linear decoy model
+preds = predict(linearDecoyGLM, newdata=FJ_indel_reads, type = "link", se.fit = TRUE) 
 lwr = preds$fit - (1.96 * preds$se.fit)  # ~ lower 95% CI to be conservative 
 lwr_2 = preds$fit - 2*(1.96 * preds$se.fit)  # ~ lower 99% CI to be conservative 
 
-FJ_indel_reads[, p_predicted:= AnomalyGLM$family$linkinv(lwr)] # add lower 95% CI prediction
-FJ_indel_reads[, p_predicted_2:= AnomalyGLM$family$linkinv(lwr_2)] # add lower 95% CI prediction
-}
-}
+FJ_indel_reads[, p_predicted:= linearDecoyGLM$family$linkinv(lwr)] # add lower 95% CI prediction
+FJ_indel_reads[, p_predicted_2:= linearDecoyGLM$family$linkinv(lwr_2)] # add lower 95% CI prediction
 
-print ("worked to get FJ predictions")
-if (use.indels==1){
-linear_and_anomaly_and_indel_fusions=rbind(FJ_indel_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)],anomaly_fusion_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)], fusion_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)])
-
-linear_and_anomaly_and_indel_fusions$overlap=as.numeric(as.vector(linear_and_anomaly_and_indel_fusions$overlap))
-print("GILLIAN AND JS doublecheck that this works: note the above should just give us p-predicteds and now newclassP will aggregate to junction-level")
-print ("GILLIAN and JS- check why overlap needs to be assigned a numerical variable-- is it text?")
-linearWithAnomalyAndIndelFusionPredictions = predictNewClassP(linear_and_anomaly_and_indel_fusions, null)
 }
 
-print ("CURRENTLY NEED TO JOIN THESE TABLES")
-consolidated_fusion=merge(fusionJunctionPredictions,linearWithAnomalyFusionPredictions , all=TRUE,by="junction")
-consolidated_fusion[,p_diff:=(p_predicted.x-p_predicted.y)] ## p_predicted.x should be less than p_predicted.y always so p_diff should be neegative
-consolidated_fusion=data.table(unique(consolidated_fusion))
-
-write.table(unique(fusionJunctionPredictions[order(-p_predicted),]),fusion_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
-write.table(unique(consolidated_fusion)[order(-p_predicted.y),], fusionwanomaly_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
 ####### now add indels
-if (use.indels==1){
-print ("now adding indels")
+#verbose adds extra output and extra info to indel table
+verbose=0
+
+print ("now adding indels and changing names to reflect accurate terminology")
 consolidated_fusion_windel=merge(linearWithAnomalyFusionPredictions ,linearWithAnomalyAndIndelFusionPredictions, all=TRUE,by="junction")
 consolidated_fusion_windel[,p_diff_indel:=(p_predicted.y-p_predicted.x)] ## p_predicted.x should be less than p_predicted.y always so p_diff should be neegative
 consolidated_fusion_windel=data.table(unique(consolidated_fusion_windel))
-write.table(unique(consolidated_fusion_windel)[order(-p_predicted.y),], fusionwanomaly_and_indel_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
-}
-}
-####################################################################################
-####################################################################################
+setnames(consolidated_fusion_windel,"p_predicted.x", "productPhat.x")
+setnames(consolidated_fusion_windel,"p_predicted.y", "productPhat.y")
+setnames(consolidated_fusion_windel,"p_value.x", "junction_cdf.x")
+setnames(consolidated_fusion_windel,"p_value.y", "junction_cdf.y")
 
+setnames(consolidated_fusion_windel,"p_diff_indel", "junction_cdf_windel_diff")
+if (verbose==0){
+consolidated_fusion_windel[,q_1.y:=NULL]
+consolidated_fusion_windel[,q_2.y:=NULL]
+consolidated_fusion_windel[,q_1.x:=NULL]
+consolidated_fusion_windel[,q_2.x:=NULL]
+consolidated_fusion_windel[,logsum.x:=NULL]
+consolidated_fusion_windel[,logsum.y:=NULL]
+}
+write.table(unique(consolidated_fusion_windel)[order(-junction_cdf.y),], fusionwanomaly_and_indel_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
+
+
+####################################################################################
+####################################################################################
+if (verbose==1){
 ## write circle prediction
 write.table(unique(linearJunctionPredictions), linear_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
 write.table(unique(circularJunctionPredictions), circ_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
@@ -826,5 +861,16 @@ write.table(unique(consolidated_linear), linearwanomaly_juncp_out, row.names=FAL
 my.null.quantiles=quantile(linear_reads$p_predicted,probs=c(0:10)/10)
 ## refer fusions to these quantiles; 'falsely called' vs. true will be fraction of linears (conservative estimate) ; error at this quantile can be evaluated. 
 
+linear_and_anomaly_and_indel_fusions=rbind(FJ_indel_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)],anomaly_fusion_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)], fusion_reads[,list(qual,lenAdjScore,qualR2,lenAdjScoreR2,junction,is.pos,overlap,is.anomaly,p_predicted,p_predicted_2)])
 
-#finish up by computing decoy distributions decoys
+linear_and_anomaly_and_indel_fusions$overlap=as.numeric(as.vector(linear_and_anomaly_and_indel_fusions$overlap))
+linearWithAnomalyAndIndelFusionPredictions = predictNewClassP(linear_and_anomaly_and_indel_fusions, null)
+
+consolidated_fusion=merge(fusionJunctionPredictions,linearWithAnomalyFusionPredictions , all=TRUE,by="junction")
+consolidated_fusion[,p_diff:=(p_predicted.x-p_predicted.y)] ## p_predicted.x should be less than p_predicted.y always so p_diff should be neegative
+consolidated_fusion=data.table(unique(consolidated_fusion))
+
+write.table(unique(fusionJunctionPredictions[order(-p_predicted),]),fusion_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
+write.table(unique(consolidated_fusion)[order(-p_predicted.y),], fusionwanomaly_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
+
+}
