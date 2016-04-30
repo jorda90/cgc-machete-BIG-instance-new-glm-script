@@ -308,7 +308,6 @@ for i in range(1,NUM_FILES + 1):
 		if retcode:
 			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}."format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
 
-
 	
 	BadFJtoJuncFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoJunc.sam")
 	if os.path.exists(BadFJtoJunc):
@@ -326,30 +325,82 @@ for i in range(1,NUM_FILES + 1):
 
 
 
+	## Read gaps are disallowed in the first version of BadJuncs.  A second version of BadJuncs was created to also find genome/reg/junc/transcriptome alignments with gapped alignments.
+## For BadFJ ver2 we use bowtie to align the reads1 and 2 as if they were paired end reads from the same strand.  We impose a minimum gap of 0 between the two and a maximum gap of 50,000 bases to allow up to a 50,000 base gapped alignment.
+	genomeBOWTIEPARAM = "--no-unal --no-mixed --no-sq -p 8 -I 0 -X 50000 -f --ff -x {genomeIndex} -1 {r1file} -2 {r2file} -S {BadFJver2Dir}/{STEM}_BadFJtoGenome.sam".format(genomeIndex=genomeIndex,r1file=r1file,r2file=r2file,BadFJver2Dir=BadFJver2Dir,STEM=STEM)
+	transcriptomeBOWTIEPARAM = "--no-unal --no-mixed  --no-sq -p 8 -I 0 -X 50000 -f --ff -x {transcriptomeIndex} -1 {r1file} -2 {r2file} -S {BadFJver2Dir}/{STEM}_BadFJtotranscriptome.sam".format(transcriptomeIndex=transcriptomeIndex,r1file=r1file,r2file=r2file,BadFJver2Dir=BadFJver2Dir,STEM=STEM)
+	regBOWTIEPARAM = "--no-unal --no-mixed --no-sq -p 8 -I 0 -X 50000 -f --ff -x {regIndex} -1 {r1file} -2 {r2file} -S {BadFJver2Dir}/{STEM}_BadFJtoReg.sam".format(regIndex=regIndex,r1file=r1file,r2file=r2file,BadFJver2Dir=BadFJver2Dir,STEM=STEM)
+	juncBOWTIEPARAM ="--no-unal --no-mixed --no-sq -p 8 -I 0 -X 50000 -f --ff -x {juncIndex} -1 {r1file} -2 {r2file} -S {BadFJver2Dir}/{STEM}_BadFJtoJunc.sam".format(juncIndex=juncIndex,r1file=r1file,r2file=r2file,BadFJver2Dir=BadFJver2Dir,STEM=STEM)
 
+	
+	#do the bowtie alignment for each of the BadFJ Ver 2 indices above
+	BadFJtoGenomeFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtoGenome.sam")
+	if os.path.exists(BadFJtoGenomeFile):
+		print( "{BadFJtoGenomeFile} exists. To realign, please manually delete this file first".format(BadFJtoGenomeFile=BadFJtoGenomeFile))
+	else
+		stdout = os.path.join(BadFJver2Dir,"out.txt")
+		stderr = os.path.join(BadFJver2Dir,"err.txt") 
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {genomeBOWTIEPARAM} | awk '{print $4}'".format(MACHETE=MACHETE))
+		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+		processes = {}
+		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+		checkProcesses(processes)
+	
+	print("BadFJ_ver2 to genome")
+	BadFJtotranscriptomeFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtotranscriptome.sam")
+	if os.path.exists(BadFJtotranscriptome):
+		print("{BadFJtotranscriptomeFile} exists. To realign, please manually delete this file first.".format(BadFJtotranscriptomeFile=BadFJtotranscriptomeFile))
+	else
+		stdout = os.path.join(BadFJver2Dir,"out.txt")
+		stderr = os.path.join(BadFJver2Dir,"err.txt")
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {transcriptomeBOWTIEPARAM} | awk '{print $4}'".format(transcriptomeBOWTIEPARAM=transcriptomeBOWTIEPARAM)
+		processes = {}
+		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+		checkProcesses(processes)
+	pirnt("BadFJ_ver2 to transcriptome")
 
+	BadFJtoRegFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtoReg.sam")
+	if os.path.exists(BadFJtoRegFile):
+		print("{BadFJtoRegFile} exists. To realign, please manually delete this file first.".format(BadFJtoRegFile=BadFJtoRegFile))
+	else
+		stdout = os.path.join(BadFJver2Dir,"out.txt")
+		stderr = os.path.join(BadFJver2Dir,"err.txt")
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {regBOWTIEPARAM} | awk '{print $4}'".format(MACHETE=MACHETE,regBOWTIEPARAM=regBOWTIEPARAM)
+	print("BadFJ_ver2 to reg")
 
-
+	BadFJtoJuncFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtoJunc.sam")	
+	if os.path.exists(BadFJtoJuncFile):
+		print("{BadFJtoJuncFile} exists. To realign, please manually delete this file first.".format(BadFJtoJuncFile=BadFJtoJuncFile)
+	else
+		stdout = os.path.join(BadFJver2Dir,"out.txt")
+		stderr = os.path.join(BadFJver2Dir,"err.txt"
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {juncBOWTIEPARAM} | awk '{print $4}'".format(MACHETE=MACHETE,juncBOWTIEPARAM=juncBOWTIEPARAM)
+	print("BadFJ_ver2 to junc")
 
 
 
 # align unaligned files to the FJ bowtie index
+# This calls the shell AlignUnalignedtoFJ.  It takes the inputs of the MACHETEoutput directory and the KNIFE unaligned reads (KNIFEdir/orig/unaligned/).  It calls on Bowtie2 to align the unaligned reads for each <STEM> to the Far Junctions bowtie indices located at FJDir/BowtieIndex/<STEM>/<STEM>_FJ_Index.   Bowtie2 parameters include alignment score with mismatch rate of ~4/100 bases, prohibiting read gaps in the reference or given sequence, and N ceiling = read length (e.g. a read consisting of 100% N's would be discarded).  The aligned reads are output to /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam.  Reads that continue to fail to align are output to /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq.
 #
 #j8_id
-print("align unaligned reads to FJ index")
+print("align unaligned reads to FJ index:  - check for /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam and /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq")
 processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_7AlignFJ.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_7AlignFJ.txt")
-	cmd = "{MACHETE}/AlignUnalignedtoFJ.sh {OUTPUT_DIR} {ORIG_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR)
+	cmd = "{MACHETE}/AlignUnalignedtoFJ.sh {OUTPUT_DIR} {ORIG_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
 
-##
 #
 #
 ###make FJ naive report
+## FarJuncNaiveReport.sh is a shell script that calls the python script FarJuncNaiveReport.py to generate the "Naive Reports".  Inputs include the MACHETE output directory, paths to the KNIFE alignment files, the amount a read should overlap the junction in order to be considered a "true" junctional alignment, and the MACHETE installation directory.
+## see the FarJuncNaiveReport.sh for more info on FarJuncNaiveReport.py and details about how alignments are selected as "true" or "false", and how the a p value is calculated.
+## The rate of true or anomaly alignments and p values are output to FJDir/reports/<STEM>_naive_report.txt.  Specific read ID's are also tracked and information on them can be found in FJDir/reports/IDs_<STEM>.txt.
+
+
 #
 #j9_id
 print("make naive rpt")
@@ -362,7 +413,6 @@ for index in range(1,NUM_FILES + 1):
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
 
-###
 ##
 ####### GLM #######
 ##Make Class input files for GLM
@@ -374,20 +424,19 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_15FJforGLM.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_15FJforGLM.txt")
-	cmd = "{MACHETE}/parse_FJ_ID_for_GLM.sh {OUTPUT_DIR} {CIRCPIPE_DIR}/circReads/ | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR)
+	cmd = "{MACHETE}/parse_FJ_ID_for_GLM.sh {OUTPUT_DIR}  | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
 
 
-#
-##
-###
 ###### ESTIMATE LIGATION ARTIFACT
+## Ligation artifact refers to the rate at which cDNA are artificially ligated, producing what appears to be a true junctional alignment.  In this step, reads that remained unaligned to the Far Junctions Bowtie index that are located in FarJuncSecondary are then aligned to new indel fasta indices under the assumption that in any local area, the rate of false ligation of a junction is similar to the rate of false ligation of any two cDNAs that do not end at exon boundaries.
 #
 ###
-###make FarJunctions.fa => Indel.fa files
+### MakeIndelFiles.sh is a shell script that calls the python script AddIndelsToFasta.py.  It takes the FarJunctions fasta files as inputs (FJDir/fasta/<STEM>_FarJunctions.fa) and outputs five files called FJDir/FarJuncIndels/<STEM>/<STEM>_FJ_Indels_1,2,3,4,5.fa where the numbers 1-5 indicate the N's inserted on each side of the breakpoint or deletions on each side of the breakpoint.  For example, the FJ_indels_3 file is the same as the FarJunctions.fa file except every sequence has 3 N's on each side of the breakpoint (total of 6 N's inserted at the breakpoint), or 3 bases are deleted from each exon on each side of the breakpoint (total of 6 deletions at the breakpoint).
 ####
+
 #j10_id
 print("make indel files")
 processes = {}
@@ -402,21 +451,23 @@ checkProcesses(processes)
 #
 #
 # make Bowtie Indices for Far Junc Indel files
+## The shell script BowtieIndexFJIndels.sh calls bowtie to index the indels_N.fa files that were created in the previous step.  The indels are output to the directory FJDir/BowtieIndels/<STEM>/<STEM>_Indels_N where N is the number of indels in that index.
 #
 print("index indels")
 for i in range(1,NumIndels + 1):
-	processes = {}
-	for j in range(1,NUM_FILES + 1):
-		stdout = os.path.join(LOG_DIR,"NumIndels{i}_{j}_out_11indexindels.txt".format(i=i,j=j))
-		stderr = os.path.join(LOG_DIR,"NumIndels(i}_{j}_err_11indexindels.txt".format(i=i,j=j)
-		cmd = "{MACHETE}/BowtieIndexFJIndels.sh {OUTPUT_DIR}/FarJuncIndels {i} {OUTPUT_DIR}/BowtieIndels {OUTPUT_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,i=i)
-		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
-		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
-	checkProcesses(processes)
+processes = {}
+for j in range(1,NUM_FILES + 1):
+	stdout = os.path.join(LOG_DIR,"NumIndels{i}_{j}_out_11indexindels.txt".format(i=i,j=j))
+	stderr = os.path.join(LOG_DIR,"NumIndels(i}_{j}_err_11indexindels.txt".format(i=i,j=j)
+	cmd = "{MACHETE}/BowtieIndexFJIndels.sh {OUTPUT_DIR}/FarJuncIndels {i} {OUTPUT_DIR}/BowtieIndels {OUTPUT_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,i=i)
+	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+checkProcesses(processes)
 
 
 ##Align FarJuncSecondary (unaligned to FJ index) to FJ indels
 
+# This section calls the shell BowtieAlignFJIndels.sh to align the fq files FJdir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_1/2.fq to the Bowtie2 indices of the far junction indels created in the previous step.  Aligned indels are stored in FJdir/FarJunctionSecondary/AlignedIndels/<STEM>/still_unaligned_<STEM>_indels<N>.sam where N is the number of indels in the Bowtie index where the reads aligned.  The bowtie parameters include a max of ~4 mismatches / 100 basepairs, max #N is the read length, and prohibits gapped alignments or gaps in the read.
 
 #
 ##
@@ -432,13 +483,10 @@ for i in range(1,NumIndels + 1):
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 	checkProcesses(processes)
 
-#
-## loop through AlignedIndels directory
-## things that don't overlap indels junction by ${NumBPOverlapAtJunc} are removed.
-## for every junction, a string is created.  For example, if 3 indel files exist, the string [0, 0, 2, 1, 5, 0, 1] represents 0*3 deletions, 0* 2 deletions, 2 * 1 deletion, 1 * no indels, 5 * 1 insertion, 0 * 2 insertions, 1 * 3 insertions.
-## strings are output into IndelsHistogram folder
-#
-##
+
+## Calls FindAlignmentArtifact_SLURM.sh which is a shell that calls MakeIndelsHisto.py.  The MakeIndelsHisto.py script reads in the aligned indels from the sam files FJdir/FarJunctionSecondary/AlignedIndels/<STEM>/still_unaligned_<STEM>_indels<N>.sam.  It concatenates all the indels_1,2,3,4,5.sam files into a larger file All_<STEM>_1/2_indels.sam in the same directory as the original sam files. In the All_<STEM>_1/2_indels.sam files, any indels that did not overlap the junction by the user specified # base pairs around the breakpoint are removed. Additionally, since the FarJuncSecondary files were aligned independently to the indels_1-5 bowtie indices, the same read could align to multiple indices.  Therefore for each read, the read with the best alignment score is placed in the All_<STEM>_1/2_indels sam file, and all other alignments to other indices are discarded.
+#  Then the python script checks the FJdir/FarJunctionAlignments/<STEM>/ sam files and creates an array for each junction.  The array is of length 2*#indels+1. In the case of 5 indels, the length is 11 and represents the number reads that aligned to the junction with [5Del, 4Del, 3Del, 2Del, 1Del, aligned to junction exactly, 1Ins, 2Ins, 3Ins, 4Ins, 5Ins]
+## the junction name and this array are output to FJDir/IndelsHistogram/indels_<STEM>_1/2.txt.  These outputs will be used to generate the Appended reports later.
 #j14_id
 print("make indels histo")
 processes = {}
@@ -459,6 +507,8 @@ checkProcesses(processes)
 AlignedIndels = os.path.join(CIRCPIPE_DIR,"orig/RegIndelAlignments")
 os.makedirs(AlignedIndels)
 
+
+#  To train the GLM, indel alignments are also created for the linear junctions.  The reference index of indels to the linear junctions is static and has already been created and is referenced above as "REG_INDEL_INDICES" on line 44.  The script AlignRegIndels calls bowtie to align reads that were unaligned the the KNIFE indices (in KNIFEdir/orig/unaligned/*.fq) to the REG_INDEL_INDICES, with the parameters of 1) approx 4 mismatches / 100 bases, maximum number N's = readlength, and no gapped alignments or read gaps.
 #j16_id
 print("Aligning unaligned files to linear junc indels")
 BOWTIEPARAMETERS = "--no-sq --no-unal --score-min L,0,-0.24 --rdg 50,50 --rfg 50,50"
@@ -478,6 +528,9 @@ for i in range(1,NumIndels + 1):
 ####
 ###
 ### reg indels class output file
+#Calls RegIndelsClassID.sh shell which calls RegIndels_ClassIDFile.py.
+# Inputs are the regular indel alignments located at KNIFEdir/orig/RegIndelAlignments/<STEM>/unaligned_<STEM>_1/2_indel1,2,3,4,5.sam.  These are concatenated into a single file in the same directory called All_<STEM>_1/2_Regindels.sam.  In the concatenation step, like for the far junctions indels, any reads are omitted if they fail to overlie the junction by the user specified overlap, and also if a read aligns to multiple indel indices, the one with the best alignment score is put into the concatenated file.
+## Then, the partner reads of all reads from All_<STEM>_1/2_Regindels.sam are identified and labeled as "good" or "bad".  If a read partner is found in genome, it has priority over transcriptome, which has priority over reg, and finally junc.  A far junction R2 cannot be found in another dictionary, as FJ reads are generated from previously unaligned reads.  If the read partner is in genome, it must be located on the same chromosome, on the opposite reference strand from R1.  If a read partner is in reg, then the downstream exon must be upstream of the uptstream reg indel exon, or the upstream read partner exon must be downstream of the downstream reg indel exon, on the same chromosome. Reference strands must be opposite.    If the partner is in junc, then the reg indel alignment must be located inside the circle created by the scrambled junction, and on the opposite reference strand.  In this manner, class input files are generated for the reg indels, which are located at KNIFE dir/circReads/ids/<STEM>_output_RegIndel.txt
 #
 
 #j18_id
@@ -492,8 +545,11 @@ for index in range(1,NUM_FILES + 1):
 checkProcesses(processes)
 
 # FJ indels class output file
-
+## This script calls FJIndelsClassID.sh
+## This takes the FJdir/FarJunctionSecondary/AlignedIndels/<STEM>/All_<STEM>_1/2_FJindels.sam and identifies read partners.  The same criteria to identify read partners as FarJuncNaiveReport.sh are applied (see above).
+## Output files are placed into FJDir/GLM_classInput/<STEM>_output_FJIndels.txt
 #j19_id
+print("FJ Indels Class Output")
 processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_19FJIndelsClassOutput.txt")
@@ -502,13 +558,13 @@ for index in range(1,NUM_FILES + 1):
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
-echo "FJ Indels Class Output: ${j19_id}"
+print("FJ Indels Class Output")
 
 
 ###### RUN GLM ###########################
 #
 ## Run GLM
-##
+##  This calls the GLM script.  Class input files from KNIFE dir/circReads/ids/ are fed into the GLM and GLM reports are generated in FJDir/reports/glmReports.  Please see GLM documentation for additional information.
 #j15b_id
 print("Run GLM")
 processes = {}
@@ -522,29 +578,29 @@ checkProcesses(processes)
 
 
 ## Append linear junctions GLM report with anomalies, indels
-#
+#AddIndelstolinearGLM.sh calls the python script KNIFEglmReportsForMachete.py.  This script parses circular and linear glmReports.  For the linear glmReports from KNIFE, the script collects any junctions where 1) the two exons from the linear report are from different genes or 2) the posterior probability is >0.9.  It adds on the rate of anomaly reads and indels to the reports and feeds them into FJDir/reports/AppendedReports.  For ciruclar reports, the script collects any junctions where the posterior probability is <0.9, appends the "Decoy" rate, and feeds the reports into FJDir/reports/Appended reports.
+## The purpose of this script is to place all reports in a single directory for the user.
 #j17_id
 print("Appending linearJuncs GLM report")
 processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_17AppendRegGLM.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_17AppendGLM.txt")
-	cmd = "{MACHETE}/AddIndelstoGLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {NumBPOverlapAtJunc} | awk '{print $4}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc)
+	cmd = "{MACHETE}/AddIndelstolinearGLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {NumBPOverlapAtJunc} | awk '{print $4}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
 ##
 ####
 
-### Append Naive report:  Add Indels, quality of junctions (good/bad), frequency of junction participation in linear junctions, and GLM report fields to the Naive report
-###
+### The AppendNaiveRept.sh shell calls the AppendNaiveRept.py script.  This reads in the IndelsHistogram, BadFJ and BadFJ_ver2 files, and GLM report results and outputs all the results into a single file in /FJDir/reports/AppendedReports/<STEM>_naive_report_Appended.txt
 #j15_id
 print("append naive rpt")
 processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_14AppendRpt.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_14AppendRpt.txt")
-	cmd = "{MACHETE}/AppendNaiveRept.sh {OUTPUT_DIR} {GLM_DIR} {MACHETE} | awk '{print $4}'"
+	cmd = "{MACHETE}/AppendNaiveRept.sh {OUTPUT_DIR} {GLM_DIR} {MACHETE} {OUTPUT_DIR}reports/glmReports | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,GLM_DIR=GLM_DIR,MACHETE=MACHETE)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
