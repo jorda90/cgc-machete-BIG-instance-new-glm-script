@@ -5,15 +5,15 @@ MAINTAINER Gillian Lee Hsieh <glhsieh@stanford.edu>
 RUN yum update -y && yum groupinstall -y 'Development Tools' && yum install -y wget zlib-devel openssl-devel sqlite-devel bzip2-devel ncurses-devel lapack-dev blas-dev
 #lapack-dev blas-dev for installing scipy in Python
 #Development Tools installs 28 packages, and their dependencies. The number of dependencies installed on a base image of centos:centos6 were 101, notably of which are Perl v5.10.1, git v1.7.1, unzip
-ENV DATA=/home/data
+ENV DATA=/home/data IndelIndices=IndelIndices HG19exons=HG19exons circularRNApipeline_Standalone=circularRNApipeline_Standalone
 RUN mkdir /src 
 #gcc-c++ needed for running g++ to make tools, such as Bowtie2
 #gcc needed for installing Python
-RUN git clone https://github.com/nathankw/KNIFE.git/ /src/knife && \
+RUN git clone https://github.com/nathankw/KNIFE.git /src/knife && \
 	cd /src/knife && \	
 	git remote add upstream https://github.com/lindaszabo/KNIFE.git && \
 	git pull
-RUN git clone https://github.com/nathankw/MACHETE.git/ /src/machete && \
+RUN git clone https://github.com/nathankw/MACHETE.git /src/machete && \
 	cd /src/machete && \
 	git remote add upstream https://github.com/gillianhsieh/MACHETE && \
 	git pull
@@ -86,14 +86,18 @@ RUN mkdir /src/samtools && \
 #		make install &&
 
 ##### ADD KNIFE Data Dependencies
-ADD /circularRNApipeline_Standalone ${DATA}
+#Note: The directory itself is not copied, just its contents.
+ADD /${circularRNApipeline_Standalone} ${DATA}/${circularRNApipeline_Standalone}
 
 #### ADD MACHETE Data Dependencies
+#Note: The directory itself is not copied, just its contents.
 #ADD HG19exons. Location of HG19exons was formerly called PICKLEDIR
-ADD /HG19exons ${DATA}
+ADD /${HG19exons} ${DATA}/${HG19exons}
 
 #ADD REG_INDEL_INDICES
-ADD /IndelIndices ${DATA}
+#Note: The directory itself is not copied, just its contents.
+RUN mkdir ${DATA}/${IndelIndices}
+ADD /${IndelIndices} ${DATA}/${IndelIndices}
 
 ENTRYPOINT []
 LABEL version="1.0" description="Detects gene fusions"
