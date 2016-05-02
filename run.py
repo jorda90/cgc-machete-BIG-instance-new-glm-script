@@ -119,7 +119,7 @@ print(NUM_FILES)
 #j1_id
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/reg {OUTPUT_DIR} | awk '{print $4}".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR)
+	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/reg {OUTPUT_DIR} {index} | awk '{print $4}".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_1sortReg.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_1sortReg.txt")
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
@@ -135,7 +135,7 @@ print("sorting reg files")
 print("sorting genome files")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/genome {OUTPUT_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR)
+	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/genome {OUTPUT_DIR} {index} | awk '{print $4}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_1sortGenome.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_1sortGenome.txt")
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
@@ -153,7 +153,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_2PEfinder.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_2PEfinder.txt")
-	cmd = "{MACHETE}/PEfinder.sh {ORIG_DIR} {OUTPUT_DIR} {USERBPDIST} {MACHETE} | awk '{print $4}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR,USERBPDIST=USERBPDIST)
+	cmd = "{MACHETE}/PEfinder.sh {ORIG_DIR} {OUTPUT_DIR} {USERBPDIST} {MACHETE} {index} | awk '{print $4}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR,USERBPDIST=USERBPDIST,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -170,7 +170,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_3PEcounter.txt")
 	stderr = os.path.joinn(LOG_DIR,str(index) + "_err_3PEcounter.txt")
-	cmd = "{MACHETE}/DistantPE_Counter.sh {OUTPUT_DIR} {MACHETE} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR)
+	cmd = "{MACHETE}/DistantPE_Counter.sh {OUTPUT_DIR} {MACHETE} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -185,7 +185,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_4PEsort.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_4PEsort.txt")
-	cmd = "{MACHETE}/SortPairedEnds.sh {OUTPUT_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR)
+	cmd = "{MACHETE}/SortPairedEnds.sh {OUTPUT_DIR} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -221,7 +221,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_5FJIndexing.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_5FJIndexing.txt")
-	cmd = "{MACHETE}/linkfastafiles.sh {OUTPUT_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR)
+	cmd = "{MACHETE}/linkfastafiles.sh {OUTPUT_DIR} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index))
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -238,7 +238,7 @@ juncIndex = os.path.join(CIRCREF,"hg19_junctions_scrambled")
 BOWTIEPARAM="-f --no-sq --no-unal --score-min L,0,-0.24 --n-ceil L,0,100 -p 4 --np 0 --rdg 50,50 --rfg 50,50"
 
 for i in range(1,NUM_FILES + 1):
-	stemCmd = "awk 'FNR == '{c}' {{print $1}}' {StemFile}".format(i=i,StemFile=StemFile)
+	stemCmd = "awk 'FNR == '{c}' {{print $1}}' {StemFile} {index}".format(i=i,StemFile=StemFile,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	stdout,stderr = popen.communicate()	
 	retcode = popen.returncode
@@ -388,7 +388,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_7AlignFJ.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_7AlignFJ.txt")
-	cmd = "{MACHETE}/AlignUnalignedtoFJ.sh {OUTPUT_DIR} {ORIG_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR)
+	cmd = "{MACHETE}/AlignUnalignedtoFJ.sh {OUTPUT_DIR} {ORIG_DIR} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -408,7 +408,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_8NaiveRpt.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_8NaiveRpt.txt")
-	cmd = "{MACHETE}/FarJuncNaiveReport.sh {OUTPUT_DIR} {ORIG_DIR} {NUMBASESAROUNDJUNC} {MACHETE} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR,NUMBASESAROUNDJUNC=NUMBASESAROUNDJUNC)
+	cmd = "{MACHETE}/FarJuncNaiveReport.sh {OUTPUT_DIR} {ORIG_DIR} {NUMBASESAROUNDJUNC} {MACHETE} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR,NUMBASESAROUNDJUNC=NUMBASESAROUNDJUNC,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -424,7 +424,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_15FJforGLM.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_15FJforGLM.txt")
-	cmd = "{MACHETE}/parse_FJ_ID_for_GLM.sh {OUTPUT_DIR}  | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR)
+	cmd = "{MACHETE}/parse_FJ_ID_for_GLM.sh {OUTPUT_DIR} {index}  | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -443,7 +443,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_10FJIndels.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_10FJIndels.txt")
-	cmd = "{MACHETE}/MakeIndelFiles.sh {OUTPUT_DIR} {NumIndels} {MACHETE} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,NumIndels=NumIndels)
+	cmd = "{MACHETE}/MakeIndelFiles.sh {OUTPUT_DIR} {NumIndels} {MACHETE} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,NumIndels=NumIndels,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -456,10 +456,10 @@ checkProcesses(processes)
 print("index indels")
 for i in range(1,NumIndels + 1):
 processes = {}
-for j in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,"NumIndels{i}_{j}_out_11indexindels.txt".format(i=i,j=j))
-	stderr = os.path.join(LOG_DIR,"NumIndels(i}_{j}_err_11indexindels.txt".format(i=i,j=j)
-	cmd = "{MACHETE}/BowtieIndexFJIndels.sh {OUTPUT_DIR}/FarJuncIndels {i} {OUTPUT_DIR}/BowtieIndels {OUTPUT_DIR} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,i=i)
+for index in range(1,NUM_FILES + 1):
+	stdout = os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_11indexindels.txt".format(i=i,index=index)
+	stderr = os.path.join(LOG_DIR,"NumIndels(i}_{index}_err_11indexindels.txt".format(i=i,index=index)
+	cmd = "{MACHETE}/BowtieIndexFJIndels.sh {OUTPUT_DIR}/FarJuncIndels {i} {OUTPUT_DIR}/BowtieIndels {OUTPUT_DIR} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,i=i,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -475,9 +475,9 @@ print("align to indels")
 BOWTIEPARAMETERS="--no-sq --no-unal --score-min L,0,-0.24 --rdg 50,50 --rfg 50,50"
 for i in range(1,NumIndels + 1):
 	processes = {}
-	for j in range(1,NUM_FILES + 1):
-		stdout = os.path.join(LOG_DIR,"NumIndels{i}_{j}_out_12alignindels.txt".format(i=i,j=j))
-		stderr = os.path.join(LOG_DIR,"NumIndes{i}_{j}_err_12alignindels.txt".format(i=i,j=j))
+	for index in range(1,NUM_FILES + 1):
+		stdout = os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_12alignindels.txt".format(i=i,index=index))
+		stderr = os.path.join(LOG_DIR,"NumIndes{i}_{index}_err_12alignindels.txt".format(i=i,index=index))
 		cmd = "{MACHETE}/BowtieAlignFJIndels.sh {OUTPUT_DIR} {BOWTIEPARAMETERS} {i} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,BOWTIEPARAMETERS=BOWTIEPARAMETERS,i=i)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -514,9 +514,9 @@ print("Aligning unaligned files to linear junc indels")
 BOWTIEPARAMETERS = "--no-sq --no-unal --score-min L,0,-0.24 --rdg 50,50 --rfg 50,50"
 for i in range(1,NumIndels + 1):
 	processes = {}
-	for j in range(1,NUM_FILES + 1):
-	 	stdout = os.path.join(LOG_DIR,"NumIndels{i}_{j}_out_15AlignRegIndels.txt".format(i=i,j=j))
-		stderr = os.path.join(LOG_DIR,"NumIndels{i}_{j}_err_15AlignRegIndels.txt".format(i=i,j=j))
+	for index in range(1,NUM_FILES + 1):
+	 	stdout = os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_15AlignRegIndels.txt".format(i=i,index=index))
+		stderr = os.path.join(LOG_DIR,"NumIndels{i}_{index}_err_15AlignRegIndels.txt".format(i=i,index=index))
 		cmd = "{MACHETE}/AlignUnalignedtoRegIndel.sh {CIRCPIPE_DIR} {i} {OUTPUT_DIR} {BOWTIEPARAMETERS} {REG_INDEL_INDICES} | awk '{print $4}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,i=i,OUTPUT_DIR=OUTPUT_DIR,BOWTIEPARAMETERS=BOWTIEPARAMETERS,REG_INDEL_INDICES=REG_INDEL_INDICES)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -539,7 +539,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_18RegIndelsClassOutput.txt")
 	stdrr = os.path.join(LOG_DIR,str(index) + "_err_18RegIndelsClassOutput.txt")
-	cmd = "{MACHETE}/RegIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NumBPOverlapAtJunc} {MACHETE} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc)
+	cmd = "{MACHETE}/RegIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NumBPOverlapAtJunc} {MACHETE} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -554,7 +554,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_19FJIndelsClassOutput.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_19FJIndelsClassOutput.txt")
-	cmd = "{MACHETE}/FJIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NumBPOverlapAtJunc} {MACHETE} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc)
+	cmd = "{MACHETE}/FJIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NumBPOverlapAtJunc} {MACHETE} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -571,7 +571,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_15GLM_r.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_15GLM_r.txt")
-	cmd = "{MACHETE}/run_GLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {MACHETE} | awk '{print $4}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR)
+	cmd = "{MACHETE}/run_GLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {MACHETE} {index} | awk '{print $4}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -586,7 +586,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_17AppendRegGLM.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_17AppendGLM.txt")
-	cmd = "{MACHETE}/AddIndelstolinearGLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {NumBPOverlapAtJunc} | awk '{print $4}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc)
+	cmd = "{MACHETE}/AddIndelstolinearGLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {NumBPOverlapAtJunc} {index} | awk '{print $4}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -600,7 +600,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_14AppendRpt.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_14AppendRpt.txt")
-	cmd = "{MACHETE}/AppendNaiveRept.sh {OUTPUT_DIR} {GLM_DIR} {MACHETE} {OUTPUT_DIR}reports/glmReports | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,GLM_DIR=GLM_DIR,MACHETE=MACHETE)
+	cmd = "{MACHETE}/AppendNaiveRept.sh {OUTPUT_DIR} {GLM_DIR} {MACHETE} {OUTPUT_DIR}reports/glmReports {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,GLM_DIR=GLM_DIR,MACHETE=MACHETE,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
