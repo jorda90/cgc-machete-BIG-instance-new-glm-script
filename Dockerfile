@@ -5,14 +5,15 @@ MAINTAINER Gillian Lee Hsieh <glhsieh@stanford.edu>
 RUN yum update -y && yum groupinstall -y 'Development Tools' && yum install -y wget zlib-devel openssl-devel sqlite-devel bzip2-devel ncurses-devel lapack-dev blas-dev
 #lapack-dev blas-dev for installing scipy in Python
 #Development Tools installs 28 packages, and their dependencies. The number of dependencies installed on a base image of centos:centos6 were 101, notably of which are Perl v5.10.1, git v1.7.1, unzip
-RUN mkdir /src
+ENV DATA=/home/data
+RUN mkdir /src 
 #gcc-c++ needed for running g++ to make tools, such as Bowtie2
 #gcc needed for installing Python
-RUN git clone https://github.com/nathankw/KNIFE.git /src/knife && \
+RUN git clone https://github.com/nathankw/KNIFE.git/ /src/knife && \
 	cd /src/knife && \	
 	git remote add upstream https://github.com/lindaszabo/KNIFE.git && \
 	git pull
-RUN git clone https://github.com/nathankw/MACHETE.git /src/machete && \
+RUN git clone https://github.com/nathankw/MACHETE.git/ /src/machete && \
 	cd /src/machete && \
 	git remote add upstream https://github.com/gillianhsieh/MACHETE && \
 	git pull
@@ -32,7 +33,7 @@ RUN mkdir -p /src/Python /src/software/Python && \
 #INSTALL TBB (Threading Building Blocks) from Intel
 #Needed for intalling Bowtie1 and Bowtie2 with parallelism enabled (to use the -p argument).
 RUN mkdir /src/TBB && \
-	cd /src/TBB \ &&
+	cd /src/TBB &&
 	wget https://www.threadingbuildingblocks.org/sites/default/files/software_releases/source/tbb44_20160128oss_src_0.tgz && \
 	tar -zxf tbb44_20160128oss_src_0.tgz && \
 	cd tbb44_20160128oss && \
@@ -83,6 +84,16 @@ RUN mkdir /src/samtools && \
 #		sh Configure -de && \
 #		make && 
 #		make install &&
-	
+
+##### ADD KNIFE Data Dependencies
+ADD /circularRNApipeline_Standalone ${DATA}/circularRNApipeline_Standalone
+
+#### ADD MACHETE Data Dependencies
+#ADD HG19exons. Location of HG19exons was formerly called PICKLEDIR
+ADD /HG19exons ${DATA}/HG19exons
+
+#ADD REG_INDEL_INDICES
+ADD /toyIndelIndices ${DATA}/IndelIndices
+
 ENTRYPOINT []
 LABEL version="1.0" description="Detects gene fusions"
