@@ -86,14 +86,14 @@ RUN mkdir /src/samtools && \
 #		make install &&
 
 ##### ADD KNIFE Data Dependencies
-ADD /circularRNApipeline_Standalone ${DATA}/circularRNApipeline_Standalone
+ADD /circularRNApipeline_Standalone ${DATA}
 
 #### ADD MACHETE Data Dependencies
 #ADD HG19exons. Location of HG19exons was formerly called PICKLEDIR
-ADD /HG19exons ${DATA}/HG19exons
+ADD /HG19exons ${DATA}
 
 #ADD REG_INDEL_INDICES
-ADD /toyIndelIndices ${DATA}/IndelIndices
+ADD /IndelIndices ${DATA}
 
 ENTRYPOINT []
 LABEL version="1.0" description="Detects gene fusions"
