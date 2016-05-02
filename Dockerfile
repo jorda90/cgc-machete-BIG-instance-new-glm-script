@@ -87,17 +87,17 @@ RUN mkdir /src/samtools && \
 
 ##### ADD KNIFE Data Dependencies
 #Note: The directory itself is not copied, just its contents.
-ADD /${circularRNApipeline_Standalone} ${DATA}/${circularRNApipeline_Standalone}
+#If <dest> does not end with a trailing slash, it will be considered a regular file and the contents of <src> will be written at <dest>.
+#If <dest> doesn’t exist, it is created along with all missing directories in its path.
+ADD /${circularRNApipeline_Standalone} ${DATA}/${circularRNApipeline_Standalone}/
 
 #### ADD MACHETE Data Dependencies
-#Note: The directory itself is not copied, just its contents.
 #ADD HG19exons. Location of HG19exons was formerly called PICKLEDIR
-ADD /${HG19exons} ${DATA}/${HG19exons}
+ADD /${HG19exons} ${DATA}/${HG19exons}/
 
 #ADD REG_INDEL_INDICES
-#Note: The directory itself is not copied, just its contents.
 RUN mkdir ${DATA}/${IndelIndices}
-ADD /${IndelIndices} ${DATA}/${IndelIndices}
+ADD /${IndelIndices} ${DATA}/${IndelIndices}/
 
 ENTRYPOINT []
 LABEL version="1.0" description="Detects gene fusions"
