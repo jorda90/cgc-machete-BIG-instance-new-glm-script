@@ -57,12 +57,12 @@ CIRCREF="/share/PI/horence/circularRNApipeline_Cluster/index" #nathankw - update
 REG_INDEL_INDICES="/home/data/IndelIndices"
 
 
-if REFGENOME == "HG38":
-	EXONS="/scratch/PI/horence/grch38_junctions"
-elif REFGENOME == "HG19":
-	EXONS="/home/data/HG19exons" #nathankw - formerly called PICKLEDIR
-else:
-	raise Exception("Incorrect value for REFGENOME. Must be one of HG19 or HG38.")
+#if REFGENOME == "HG38":
+#	EXONS="/scratch/PI/horence/grch38_junctions"
+#elif REFGENOME == "HG19":
+EXONS="/home/data/HG19exons" #nathankw - formerly called PICKLEDIR
+#else:
+#	raise Exception("Incorrect value for REFGENOME. Must be one of HG19 or HG38.")
 
 
 ORIG_DIR = os.path.join(CIRCPIPE_DIR,"orig")
