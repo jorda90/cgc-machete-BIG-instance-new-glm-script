@@ -32,13 +32,13 @@ RUN mkdir -p /src/Python /src/software/Python && \
 	pip install scipy
 #INSTALL TBB (Threading Building Blocks) from Intel
 #Needed for intalling Bowtie1 and Bowtie2 with parallelism enabled (to use the -p argument).
-RUN mkdir /src/TBB && \
-	cd /src/TBB && \
-	wget https://www.threadingbuildingblocks.org/sites/default/files/software_releases/source/tbb44_20160128oss_src_0.tgz && \
-	tar -zxf tbb44_20160128oss_src_0.tgz && \
-	cd tbb44_20160128oss && \
-	gmake && \
-	. build/linux_intel64_gcc_cc4.4.7_libc2.12_kernel4.1.19_release/tbbvars.sh
+#RUN mkdir /src/TBB && \
+#	cd /src/TBB && \
+#	wget https://www.threadingbuildingblocks.org/sites/default/files/software_releases/source/tbb44_20160128oss_src_0.tgz && \
+#	tar -zxf tbb44_20160128oss_src_0.tgz && \
+#	cd tbb44_20160128oss && \
+#	gmake && \
+#	. build/linux_intel64_gcc_cc4.4.7_libc2.12_kernel4.1.19_release/tbbvars.sh
 #INSTALL Bowtie1.1.1
 RUN mkdir /src/Bowtie1 && \
 	cd /src/Bowtie1 && \
