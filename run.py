@@ -66,7 +66,7 @@ EXONS="/home/data/HG19exons" #nathankw - formerly called PICKLEDIR
 
 
 ORIG_DIR = os.path.join(CIRCPIPE_DIR,"orig")
-UNALIGNEDDIR = os.path.join(ORIG_DIR),"unaligned")
+UNALIGNEDDIR = os.path.join(ORIG_DIR,"unaligned")
 GLM_DIR = os.path.join(CIRCPIPE_DIR,"circReads/glmReports")
 DistantPEDir = os.path.join(OUTPUT_DIR,"DistantPEFiles")
 os.mkdir(DistantPEDir)
@@ -221,7 +221,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_5FJIndexing.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_5FJIndexing.txt")
-	cmd = "{MACHETE}/linkfastafiles.sh {OUTPUT_DIR} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index))
+	cmd = "{MACHETE}/linkfastafiles.sh {OUTPUT_DIR} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -243,7 +243,7 @@ for i in range(1,NUM_FILES + 1):
 	stdout,stderr = popen.communicate()	
 	retcode = popen.returncode
 	if retcode:
-		raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}."format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+		raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
 	STEM = stdout
 	FarJuncFasta = glob.glob(os.path.join(FASTADIR,"STEM","*FarJunctions.fa"))
 	BadFJStemDir =os.path.join(BadFJDir,STEM)
@@ -266,7 +266,7 @@ for i in range(1,NUM_FILES + 1):
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	stdout,stderr = popen.communicate()
 
-	BadFJtoGenomeFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoGenome.sam"):
+	BadFJtoGenomeFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoGenome.sam")
 	if os.path.exists(BadFJtoGenomeFile):
 		print("{BadFJtoGenomeFile} exists. To realign, please manually delete this file first".format(BadFJtoGenomeFile=BadFJtoGenomeFile))
 	else:
@@ -278,7 +278,7 @@ for i in range(1,NUM_FILES + 1):
 		stdout,stderr = popen.communicate()
 		retcode = popen.returncode
 		if retcode:
-			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}."format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
 
 	BadFJtotranscriptomeFile = os.path.join(BadFJStemDir,STEM + "__BadFJtotranscriptome.sam")
 	if os.path.exists(BadFJtotranscriptomeFile):
@@ -292,7 +292,7 @@ for i in range(1,NUM_FILES + 1):
 		stdout,stderr = popen.communicate()
 		retcode = popen.returncode
 		if retcode:
-			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}."format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
 
 	BadFJtoRegFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoReg.sam")
 	if os.path.exists(BadFJtoRegFile):
@@ -306,13 +306,13 @@ for i in range(1,NUM_FILES + 1):
 		stdout,stderr = popen.communicate()
 		retcode = popen.returncode
 		if retcode:
-			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}."format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
 
 	
 	BadFJtoJuncFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoJunc.sam")
 	if os.path.exists(BadFJtoJunc):
 		print("{BadFJtoJuncFile} exists. To realign, please manually delete this file first".format(BadFJtoJuncFile=BadFJtoJuncFile))
-	else
+	else:
 		stdout = os.path.join(BadFJStemDir,"out.txt")
 		stderr = os.path.join(BadFJStemDir,"err.txt")
 		print("BadFJ to junc: ")
@@ -321,7 +321,7 @@ for i in range(1,NUM_FILES + 1):
 		stdout,stderr = popen.communicate()
 		retcode = popen.returncode
 		if retcode:
-			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}."format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
 
 
 
@@ -337,10 +337,10 @@ for i in range(1,NUM_FILES + 1):
 	BadFJtoGenomeFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtoGenome.sam")
 	if os.path.exists(BadFJtoGenomeFile):
 		print( "{BadFJtoGenomeFile} exists. To realign, please manually delete this file first".format(BadFJtoGenomeFile=BadFJtoGenomeFile))
-	else
+	else:
 		stdout = os.path.join(BadFJver2Dir,"out.txt")
 		stderr = os.path.join(BadFJver2Dir,"err.txt") 
-		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {genomeBOWTIEPARAM} | awk '{print $4}'".format(MACHETE=MACHETE))
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {genomeBOWTIEPARAM} | awk '{print $4}'".format(MACHETE=MACHETE)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes = {}
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -350,7 +350,7 @@ for i in range(1,NUM_FILES + 1):
 	BadFJtotranscriptomeFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtotranscriptome.sam")
 	if os.path.exists(BadFJtotranscriptome):
 		print("{BadFJtotranscriptomeFile} exists. To realign, please manually delete this file first.".format(BadFJtotranscriptomeFile=BadFJtotranscriptomeFile))
-	else
+	else:
 		stdout = os.path.join(BadFJver2Dir,"out.txt")
 		stderr = os.path.join(BadFJver2Dir,"err.txt")
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {transcriptomeBOWTIEPARAM} | awk '{print $4}'".format(transcriptomeBOWTIEPARAM=transcriptomeBOWTIEPARAM)
@@ -362,7 +362,7 @@ for i in range(1,NUM_FILES + 1):
 	BadFJtoRegFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtoReg.sam")
 	if os.path.exists(BadFJtoRegFile):
 		print("{BadFJtoRegFile} exists. To realign, please manually delete this file first.".format(BadFJtoRegFile=BadFJtoRegFile))
-	else
+	else:
 		stdout = os.path.join(BadFJver2Dir,"out.txt")
 		stderr = os.path.join(BadFJver2Dir,"err.txt")
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {regBOWTIEPARAM} | awk '{print $4}'".format(MACHETE=MACHETE,regBOWTIEPARAM=regBOWTIEPARAM)
@@ -370,10 +370,10 @@ for i in range(1,NUM_FILES + 1):
 
 	BadFJtoJuncFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtoJunc.sam")	
 	if os.path.exists(BadFJtoJuncFile):
-		print("{BadFJtoJuncFile} exists. To realign, please manually delete this file first.".format(BadFJtoJuncFile=BadFJtoJuncFile)
-	else
+		print("{BadFJtoJuncFile} exists. To realign, please manually delete this file first.".format(BadFJtoJuncFile=BadFJtoJuncFile))
+	else:
 		stdout = os.path.join(BadFJver2Dir,"out.txt")
-		stderr = os.path.join(BadFJver2Dir,"err.txt"
+		stderr = os.path.join(BadFJver2Dir,"err.txt")
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {juncBOWTIEPARAM} | awk '{print $4}'".format(MACHETE=MACHETE,juncBOWTIEPARAM=juncBOWTIEPARAM)
 	print("BadFJ_ver2 to junc")
 
@@ -455,14 +455,14 @@ checkProcesses(processes)
 #
 print("index indels")
 for i in range(1,NumIndels + 1):
-processes = {}
-for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_11indexindels.txt".format(i=i,index=index)
-	stderr = os.path.join(LOG_DIR,"NumIndels(i}_{index}_err_11indexindels.txt".format(i=i,index=index)
-	cmd = "{MACHETE}/BowtieIndexFJIndels.sh {OUTPUT_DIR}/FarJuncIndels {i} {OUTPUT_DIR}/BowtieIndels {OUTPUT_DIR} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,i=i,index=index)
-	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
-	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
-checkProcesses(processes)
+	processes = {}
+	for index in range(1,NUM_FILES + 1):
+		stdout = os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_11indexindels.txt".format(i=i,index=index))
+		stderr = os.path.join(LOG_DIR,"NumIndels(i}_{index}_err_11indexindels.txt".format(i=i,index=index))
+		cmd = "{MACHETE}/BowtieIndexFJIndels.sh {OUTPUT_DIR}/FarJuncIndels {i} {OUTPUT_DIR}/BowtieIndels {OUTPUT_DIR} {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,i=i,index=index)
+		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+	checkProcesses(processes)
 
 
 ##Align FarJuncSecondary (unaligned to FJ index) to FJ indels
@@ -600,7 +600,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_14AppendRpt.txt")
 	stderr = os.path.join(LOG_DIR,str(index) + "_err_14AppendRpt.txt")
-	cmd = "{MACHETE}/AppendNaiveRept.sh {OUTPUT_DIR} {GLM_DIR} {MACHETE} {OUTPUT_DIR}reports/glmReports {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,GLM_DIR=GLM_DIR,MACHETE=MACHETE,index=index)
+	cmd = "{MACHETE}/AppendNaiveRept.sh {OUTPUT_DIR} {GLM_DIR} {MACHETE} {OUTPUT_DIR}reports/glmReports {index} | awk '{print $4}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,GLM_DIR=GLM_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
