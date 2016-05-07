@@ -248,7 +248,7 @@ juncIndex = os.path.join(CIRCREF,"hg19_junctions_scrambled")
 BOWTIEPARAM="-f --no-sq --no-unal --score-min L,0,-0.24 --n-ceil L,0,100 -p 4 --np 0 --rdg 50,50 --rfg 50,50"
 
 for i in range(1,NUM_FILES + 1):
-	stemCmd = "awk 'FNR == '{c}' {{print $1}}' {StemFile} {index}".format(i=i,StemFile=StemFile,index=index)
+	stemCmd = "awk 'FNR == '{i}' {{print $1}}' {StemFile}".format(i=i,StemFile=StemFile)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	stdout,stderr = popen.communicate()	
 	retcode = popen.returncode
