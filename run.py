@@ -257,9 +257,15 @@ for i in range(1,NUM_FILES + 1):
 	STEM = stdout
 	FarJuncFasta = glob.glob(os.path.join(FASTADIR,"STEM","*FarJunctions.fa"))
 	BadFJStemDir =os.path.join(BadFJDir,STEM)
+	if  os.path.isdir(BadFJStemDir):
+		shutil.rmtree(BadFJStemDir)
 	os.mkdir(BadFJStemDir)
+
 	BadFJver2Dir=os.path.join(OUTPUT_DIR,"BadFJ_ver2",STEM)
+	if os.path.isdir(BadFJver2Dir):
+		shutil.rmtree(BadFJver2Dir)
 	os.makedirs(BadFJver2Dir)
+
 	r1file=os.path.join(BadFJver2Dir,STEM + "_FarJunctions_R1.fa")
 	r2file=os.path.join(BadFJver2Dir,STEM + "_FarJunctions_R2.fa")
 	#Prior to alignment with the reference indices a python script SplitFastaforBadFJ.py called by the shell LenientBadFJ_SLURM
@@ -272,7 +278,7 @@ for i in range(1,NUM_FILES + 1):
 	processes = {}
 	stdout = open(os.path.join(LOG_DIR,str(STEM) + "_out_6BadJunc.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(STEM) + "_err_6BadJunc.txt"),"w")
-	cmd = "{MACHETE}/LenientBadFJ_SLURM.sh ${FarJuncFasta} ${BadFJver2Dir} ${OUTPUT_DIR} ${MACHETE} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,REFGENOME=REFGENOME,CIRCREF=CIRCREF)
+	cmd = "{MACHETE}/LenientBadFJ_SLURM.sh ${FarJuncFasta} ${BadFJver2Dir} ${OUTPUT_DIR} ${MACHETE} | awk '{{print $4}}'".format(MACHETE=MACHETE,FarJuncFasta=FarJuncFasta,BadFJver2Dir=BadFJver2Dir,OUTPUT_DIR=OUTPUT_DIR)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	stdout,stderr = popen.communicate()
 
