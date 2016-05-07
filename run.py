@@ -179,7 +179,7 @@ print("counting mismatch rates")
 processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = os.path.join(LOG_DIR,str(index) + "_out_3PEcounter.txt")
-	stderr = os.path.joinn(LOG_DIR,str(index) + "_err_3PEcounter.txt")
+	stderr = os.path.join(LOG_DIR,str(index) + "_err_3PEcounter.txt")
 	cmd = "{MACHETE}/DistantPE_Counter.sh {OUTPUT_DIR} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
