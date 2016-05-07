@@ -178,8 +178,8 @@ print("Outputting Mismatched paired ends: job ${j3_id}")
 print("counting mismatch rates")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_3PEcounter.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_3PEcounter.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_3PEcounter.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_3PEcounter.txt"),"w")
 	cmd = "{MACHETE}/DistantPE_Counter.sh {OUTPUT_DIR} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -193,8 +193,8 @@ checkProcesses(processes)
 print("sorting mismatched PE files")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_4PEsort.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_4PEsort.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_4PEsort.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_4PEsort.txt"),"w")
 	cmd = "{MACHETE}/SortPairedEnds.sh {OUTPUT_DIR} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -212,8 +212,8 @@ for i in range(1,25):
 		i = "X"
 	elif i == 24:
 		i = "Y"
-	stdout = os.path.join(LOG_DIR,str(i) + "_out_5makefasta.txt")
-	stderr = os.path.join(LOG_DIR,str(i) + "_err_5makefasta.txt")
+	stdout = open(os.path.join(LOG_DIR,str(i) + "_out_5makefasta.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(i) + "_err_5makefasta.txt"),"w")
 	cmd = "{MACHETE}/makeJunctions.sh {EXONS} {OUTPUT_DIR} {i} {MACHETE} | awk '{{print $4}}'".format(MACHETE=MACHETE,EXONS=EXONS,OUTPUT_DIR=OUTPUT_DIR,i=i)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -229,8 +229,8 @@ checkProcesses(processes)
 print("make FJ bowtie indices for each experiment")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_5FJIndexing.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_5FJIndexing.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_5FJIndexing.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_5FJIndexing.txt"),"w")
 	cmd = "{MACHETE}/linkfastafiles.sh {OUTPUT_DIR} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -270,8 +270,8 @@ for i in range(1,NUM_FILES + 1):
 	#j7_id=
 	print("Identify Bad FJ's")
 	processes = {}
-	stdout = os.path.join(LOG_DIR,str(STEM) + "_out_6BadJunc.txt")
-	stderr = os.path.join(LOG_DIR,str(STEM) + "_err_6BadJunc.txt")
+	stdout = open(os.path.join(LOG_DIR,str(STEM) + "_out_6BadJunc.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(STEM) + "_err_6BadJunc.txt"),"w")
 	cmd = "{MACHETE}/LenientBadFJ_SLURM.sh ${FarJuncFasta} ${BadFJver2Dir} ${OUTPUT_DIR} ${MACHETE} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,REFGENOME=REFGENOME,CIRCREF=CIRCREF)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	stdout,stderr = popen.communicate()
@@ -280,8 +280,8 @@ for i in range(1,NUM_FILES + 1):
 	if os.path.exists(BadFJtoGenomeFile):
 		print("{BadFJtoGenomeFile} exists. To realign, please manually delete this file first".format(BadFJtoGenomeFile=BadFJtoGenomeFile))
 	else:
-		stdout = os.path.join(BadFJStemDir,"out.txt")
-		stderr = os.path.join(BadFJStemDir,"err.txt")
+		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
+		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {genomeIndex} {SPORKFasta} {BadFJtoGenomeFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,SPORKFasta=SPORKFasta,BadFJtoGenomeFile=BadFJtoGenomeFile)
 		print("BadFJ to genome: ${BadFJj1_id}")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
@@ -294,8 +294,8 @@ for i in range(1,NUM_FILES + 1):
 	if os.path.exists(BadFJtotranscriptomeFile):
 		print("{BadFJtotranscriptomeFile} exists.  To realign, please manually delete this file first".format(BadFJtotranscriptomeFile=BadFJtotranscriptomeFile))
 	else:
-		stdout = os.path.join(BadFJStemDir,"out.txt")
-		stderr = os.path.join(BadFJStemDir,"err.txt")
+		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
+		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {transcriptomeIndex} {SPORKFasta} {BadFJtotranscriptomeFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,transcriptomeIndex=transcriptomeIndex,SPORKFasta=SPORKFasta,BadFJtotranscriptomeFile=BadFJtotranscriptomeFile)
 		print("BadFJ to transcriptome")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
@@ -308,8 +308,8 @@ for i in range(1,NUM_FILES + 1):
 	if os.path.exists(BadFJtoRegFile):
 		print("{BadFJtoRegFile} exists. To realign, please manually delete this file first.".format(BadFJtoRegFile=BadFJtoRegFile))
 	else:
-		stdout = os.path.join(BadFJStemDir,"out.txt") 
-		stderr = os.path.join(BadFJStemDir,"err.txt")
+		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
+		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {regIndex} {SPORKFasta} {BadFJtoRegFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,regIndex=regIndex,SPORKFasta=SPORKFasta,BadFJtoRegFile=BadFJtoRegFile)
 		print("BadFJ to reg")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
@@ -323,8 +323,8 @@ for i in range(1,NUM_FILES + 1):
 	if os.path.exists(BadFJtoJunc):
 		print("{BadFJtoJuncFile} exists. To realign, please manually delete this file first".format(BadFJtoJuncFile=BadFJtoJuncFile))
 	else:
-		stdout = os.path.join(BadFJStemDir,"out.txt")
-		stderr = os.path.join(BadFJStemDir,"err.txt")
+		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
+		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
 		print("BadFJ to junc: ")
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {juncIndex} {SPORKFasta} {BadFJtoJuncFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,juncIndex=juncIndex,SPORKFasta=SPORKFasta,BadFJtoJuncFile=BadFJtoJuncFile)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
@@ -348,8 +348,8 @@ for i in range(1,NUM_FILES + 1):
 	if os.path.exists(BadFJtoGenomeFile):
 		print( "{BadFJtoGenomeFile} exists. To realign, please manually delete this file first".format(BadFJtoGenomeFile=BadFJtoGenomeFile))
 	else:
-		stdout = os.path.join(BadFJver2Dir,"out.txt")
-		stderr = os.path.join(BadFJver2Dir,"err.txt") 
+		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
+		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w") 
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {genomeBOWTIEPARAM} | awk '{{print $4}}'".format(MACHETE=MACHETE)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes = {}
@@ -361,8 +361,8 @@ for i in range(1,NUM_FILES + 1):
 	if os.path.exists(BadFJtotranscriptome):
 		print("{BadFJtotranscriptomeFile} exists. To realign, please manually delete this file first.".format(BadFJtotranscriptomeFile=BadFJtotranscriptomeFile))
 	else:
-		stdout = os.path.join(BadFJver2Dir,"out.txt")
-		stderr = os.path.join(BadFJver2Dir,"err.txt")
+		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
+		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {transcriptomeBOWTIEPARAM} | awk '{{print $4}}'".format(transcriptomeBOWTIEPARAM=transcriptomeBOWTIEPARAM)
 		processes = {}
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -373,8 +373,8 @@ for i in range(1,NUM_FILES + 1):
 	if os.path.exists(BadFJtoRegFile):
 		print("{BadFJtoRegFile} exists. To realign, please manually delete this file first.".format(BadFJtoRegFile=BadFJtoRegFile))
 	else:
-		stdout = os.path.join(BadFJver2Dir,"out.txt")
-		stderr = os.path.join(BadFJver2Dir,"err.txt")
+		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
+		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {regBOWTIEPARAM} | awk '{{print $4}}'".format(MACHETE=MACHETE,regBOWTIEPARAM=regBOWTIEPARAM)
 	print("BadFJ_ver2 to reg")
 
@@ -382,8 +382,8 @@ for i in range(1,NUM_FILES + 1):
 	if os.path.exists(BadFJtoJuncFile):
 		print("{BadFJtoJuncFile} exists. To realign, please manually delete this file first.".format(BadFJtoJuncFile=BadFJtoJuncFile))
 	else:
-		stdout = os.path.join(BadFJver2Dir,"out.txt")
-		stderr = os.path.join(BadFJver2Dir,"err.txt")
+		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
+		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {juncBOWTIEPARAM} | awk '{{print $4}}'".format(MACHETE=MACHETE,juncBOWTIEPARAM=juncBOWTIEPARAM)
 	print("BadFJ_ver2 to junc")
 
@@ -396,8 +396,8 @@ for i in range(1,NUM_FILES + 1):
 print("align unaligned reads to FJ index:  - check for /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam and /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_7AlignFJ.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_7AlignFJ.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_7AlignFJ.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_7AlignFJ.txt"),"w")
 	cmd = "{MACHETE}/AlignUnalignedtoFJ.sh {OUTPUT_DIR} {ORIG_DIR} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -416,8 +416,8 @@ checkProcesses(processes)
 print("make naive rpt")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_8NaiveRpt.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_8NaiveRpt.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_8NaiveRpt.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_8NaiveRpt.txt"),"w")
 	cmd = "{MACHETE}/FarJuncNaiveReport.sh {OUTPUT_DIR} {ORIG_DIR} {NUMBASESAROUNDJUNC} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR,NUMBASESAROUNDJUNC=NUMBASESAROUNDJUNC,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -432,8 +432,8 @@ checkProcesses(processes)
 print("make FJ class input files")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_15FJforGLM.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_15FJforGLM.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_15FJforGLM.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_15FJforGLM.txt"),"w")
 	cmd = "{MACHETE}/parse_FJ_ID_for_GLM.sh {OUTPUT_DIR} {index}  | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -451,8 +451,8 @@ checkProcesses(processes)
 print("make indel files")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_10FJIndels.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_10FJIndels.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_10FJIndels.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_10FJIndels.txt"),"w")
 	cmd = "{MACHETE}/MakeIndelFiles.sh {OUTPUT_DIR} {NumIndels} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,NumIndels=NumIndels,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -467,8 +467,8 @@ print("index indels")
 for i in range(1,NumIndels + 1):
 	processes = {}
 	for index in range(1,NUM_FILES + 1):
-		stdout = os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_11indexindels.txt".format(i=i,index=index))
-		stderr = os.path.join(LOG_DIR,"NumIndels(i}_{index}_err_11indexindels.txt".format(i=i,index=index))
+		stdout = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_11indexindels.txt".format(i=i,index=index)),"w")
+		stderr = open(os.path.join(LOG_DIR,"NumIndels(i}_{index}_err_11indexindels.txt".format(i=i,index=index)),"w")
 		cmd = "{MACHETE}/BowtieIndexFJIndels.sh {OUTPUT_DIR}/FarJuncIndels {i} {OUTPUT_DIR}/BowtieIndels {OUTPUT_DIR} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,i=i,index=index)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -486,8 +486,8 @@ BOWTIEPARAMETERS="--no-sq --no-unal --score-min L,0,-0.24 --rdg 50,50 --rfg 50,5
 for i in range(1,NumIndels + 1):
 	processes = {}
 	for index in range(1,NUM_FILES + 1):
-		stdout = os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_12alignindels.txt".format(i=i,index=index))
-		stderr = os.path.join(LOG_DIR,"NumIndes{i}_{index}_err_12alignindels.txt".format(i=i,index=index))
+		stdout = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_12alignindels.txt".format(i=i,index=index)),"w")
+		stderr = open(os.path.join(LOG_DIR,"NumIndes{i}_{index}_err_12alignindels.txt".format(i=i,index=index)),"w")
 		cmd = "{MACHETE}/BowtieAlignFJIndels.sh {OUTPUT_DIR} {BOWTIEPARAMETERS} {i} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,BOWTIEPARAMETERS=BOWTIEPARAMETERS,i=i)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -501,8 +501,8 @@ for i in range(1,NumIndels + 1):
 print("make indels histo")
 processes = {}
 for index in range(1,NumIndels + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_13filterIndels.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_13filterIndels.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_13filterIndels.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_13filterIndels.txt"),"w")
 	cmd = "{MACHETE}/FindAlignmentArtifact_SLURM.sh {OUTPUT_DIR} {NumBPOverlapAtJunc} {NumIndels} {MACHETE} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,NumIndels=NumIndels)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -525,8 +525,8 @@ BOWTIEPARAMETERS = "--no-sq --no-unal --score-min L,0,-0.24 --rdg 50,50 --rfg 50
 for i in range(1,NumIndels + 1):
 	processes = {}
 	for index in range(1,NUM_FILES + 1):
-	 	stdout = os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_15AlignRegIndels.txt".format(i=i,index=index))
-		stderr = os.path.join(LOG_DIR,"NumIndels{i}_{index}_err_15AlignRegIndels.txt".format(i=i,index=index))
+	 	stdout = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_15AlignRegIndels.txt".format(i=i,index=index)),"w")
+		stderr = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_err_15AlignRegIndels.txt".format(i=i,index=index)),"w")
 		cmd = "{MACHETE}/AlignUnalignedtoRegIndel.sh {CIRCPIPE_DIR} {i} {OUTPUT_DIR} {BOWTIEPARAMETERS} {REG_INDEL_INDICES} | awk '{{print $4}}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,i=i,OUTPUT_DIR=OUTPUT_DIR,BOWTIEPARAMETERS=BOWTIEPARAMETERS,REG_INDEL_INDICES=REG_INDEL_INDICES)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -547,8 +547,8 @@ for i in range(1,NumIndels + 1):
 print("Reg Indels Class Output")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_18RegIndelsClassOutput.txt")
-	stdrr = os.path.join(LOG_DIR,str(index) + "_err_18RegIndelsClassOutput.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_18RegIndelsClassOutput.txt"),"w")
+	stdrr = open(os.path.join(LOG_DIR,str(index) + "_err_18RegIndelsClassOutput.txt"),"w")
 	cmd = "{MACHETE}/RegIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NumBPOverlapAtJunc} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -562,8 +562,8 @@ checkProcesses(processes)
 print("FJ Indels Class Output")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_19FJIndelsClassOutput.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_19FJIndelsClassOutput.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_19FJIndelsClassOutput.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_19FJIndelsClassOutput.txt"),"w")
 	cmd = "{MACHETE}/FJIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NumBPOverlapAtJunc} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -579,8 +579,8 @@ print("FJ Indels Class Output")
 print("Run GLM")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_15GLM_r.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_15GLM_r.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_15GLM_r.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_15GLM_r.txt"),"w")
 	cmd = "{MACHETE}/run_GLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -594,8 +594,8 @@ checkProcesses(processes)
 print("Appending linearJuncs GLM report")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_17AppendRegGLM.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_17AppendGLM.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_17AppendRegGLM.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_17AppendGLM.txt"),"w")
 	cmd = "{MACHETE}/AddIndelstolinearGLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {NumBPOverlapAtJunc} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -608,8 +608,8 @@ checkProcesses(processes)
 print("append naive rpt")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_14AppendRpt.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_14AppendRpt.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_14AppendRpt.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_14AppendRpt.txt"),"w")
 	cmd = "{MACHETE}/AppendNaiveRept.sh {OUTPUT_DIR} {GLM_DIR} {MACHETE} {OUTPUT_DIR}reports/glmReports {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,GLM_DIR=GLM_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
