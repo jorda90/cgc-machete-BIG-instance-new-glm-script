@@ -4,6 +4,7 @@ import sys
 import subprocess
 import glob
 from argparse import ArgumentParser
+import pdb
 
 # goal is to create distant paired ends using my paired end finder
 # then use output to generate far junction library
@@ -122,13 +123,13 @@ print(NUM_FILES)
 ## All files from the original KNIFE alignments are sorted into alphabetical order because it is faster for python to identify read partners in two alphabetically sorted files than it is to find read pairs in two huge files where read IDs are scrambled.
 
 
-## the shell AlphabetizeENCODEreads.sh takes directories reg and genome, where we plan to search for mismatched paired ends, and sorts them alphabetically using the linux sort function
+## the shell AlphabetizeKNIFEreads.sh takes directories reg and genome, where we plan to search for mismatched paired ends, and sorts them alphabetically using the linux sort function
 
 ## sorting reg files
 #j1_id
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/reg {OUTPUT_DIR} {index} | awk '{{print $4}}".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
+	cmd = "{MACHETE}/AlphabetizeKNIFEreads.sh {ORIG_DIR}/reg {OUTPUT_DIR} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
 	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_1sortReg.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_1sortReg.txt"),"w")
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
@@ -144,9 +145,9 @@ print("sorting reg files")
 print("sorting genome files")
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	cmd = "{MACHETE}/AlphabetizeENCODEreads.sh {ORIG_DIR}/genome {OUTPUT_DIR} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_1sortGenome.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_1sortGenome.txt")
+	cmd = "{MACHETE}/AlphabetizeKNIFEreads.sh {ORIG_DIR}/genome {OUTPUT_DIR} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_1sortGenome.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_1sortGenome.txt"),"w")
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -160,8 +161,8 @@ checkProcesses(processes)
 #j3_id
 processes = {}
 for index in range(1,NUM_FILES + 1):
-	stdout = os.path.join(LOG_DIR,str(index) + "_out_2PEfinder.txt")
-	stderr = os.path.join(LOG_DIR,str(index) + "_err_2PEfinder.txt")
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_2PEfinder.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_2PEfinder.txt"),"w")
 	cmd = "{MACHETE}/PEfinder.sh {ORIG_DIR} {OUTPUT_DIR} {USERBPDIST} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,ORIG_DIR=ORIG_DIR,OUTPUT_DIR=OUTPUT_DIR,USERBPDIST=USERBPDIST,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
