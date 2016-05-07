@@ -249,7 +249,7 @@ BOWTIEPARAM="-f --no-sq --no-unal --score-min L,0,-0.24 --n-ceil L,0,100 -p 4 --
 
 for i in range(1,NUM_FILES + 1):
 	stemCmd = "awk 'FNR == '{i}' {{print $1}}' {StemFile}".format(i=i,StemFile=StemFile)
-	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+	popen = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
 	stdout,stderr = popen.communicate()	
 	retcode = popen.returncode
 	if retcode:
