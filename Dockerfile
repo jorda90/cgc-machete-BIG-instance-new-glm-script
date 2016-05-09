@@ -2,7 +2,13 @@ FROM centos:centos6
 #comes with python/2.7.5
 MAINTAINER Gillian Lee Hsieh <glhsieh@stanford.edu>
 #RUN yum update -y && yum install -y wget git gcc unzip gcc-c++ zlib-devel openssl-devel sqlite-devel bzip2-devel ncurses-devel lapack-dev blas-dev
-RUN yum update -y && yum groupinstall -y 'Development Tools' && yum install -y wget zlib-devel openssl-devel sqlite-devel bzip2-devel ncurses-devel lapack-dev blas-dev
+RUN yum update -y && yum groupinstall -y 'Development Tools' && yum install -y wget \
+	bzip2-devel \
+	lapack-dev blas-dev
+	ncurses-devel \
+	openssl-devel \
+	sqlite-devel \
+	zlib-devel \
 #lapack-dev blas-dev for installing scipy in Python
 #Development Tools installs 28 packages, and their dependencies. The number of dependencies installed on a base image of centos:centos6 were 101, notably of which are Perl v5.10.1, git v1.7.1, unzip
 ENV DATA=/home/data IndelIndices=IndelIndices HG19exons=HG19exons circularRNApipeline_Standalone=circularRNApipeline_Standalone
