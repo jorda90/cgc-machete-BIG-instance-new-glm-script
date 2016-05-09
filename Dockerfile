@@ -31,9 +31,9 @@ RUN mkdir -p /src/Python /src/software/Python && \
 	cd Python-2.7.10 && \
 	./configure --prefix=/src/software/Python && \
 	make && \
-	make install && \
-	export PATH=/src/software/Python/bin:${PATH} && \
-	wget https://bootstrap.pypa.io/get-pip.py && \
+	make install
+RUN	PATH=/src/software/Python/bin:${PATH}
+RUN	wget https://bootstrap.pypa.io/get-pip.py && \
 	python get-pip.py && \
 	pip install scipy
 #INSTALL TBB (Threading Building Blocks) from Intel
