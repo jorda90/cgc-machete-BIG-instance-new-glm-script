@@ -289,7 +289,7 @@ for i in range(1,NUM_FILES + 1):
 		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
 		fasta = os.path.join(FASTADIR,"{STEM}_FarJunctions.fa".format(STEM=STEM))
-		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {genomeIndex} {fasta} {BadFJtoGenomeFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,fasta=fasta,BadFJtoGenomeFile=BadFJtoGenomeFile)
+		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {genomeIndex} {fasta} {BadFJtoGenomeFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,genomeIndex=genomeIndex,fasta=fasta,BadFJtoGenomeFile=BadFJtoGenomeFile)
 		print("BadFJ to genome: ${BadFJj1_id}")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		stdout,stderr = popen.communicate()
