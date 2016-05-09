@@ -35,7 +35,8 @@ RUN mkdir -p /src/Python /src/software/Python && \
 RUN	PATH=/src/software/Python/bin:${PATH}
 RUN	wget https://bootstrap.pypa.io/get-pip.py && \
 	python get-pip.py && \
-	pip install scipy
+	pip install scipy && \
+	pip install numpy
 #INSTALL TBB (Threading Building Blocks) from Intel
 #Needed for intalling Bowtie1 and Bowtie2 with parallelism enabled (to use the -p argument).
 #RUN mkdir /src/TBB && \
