@@ -288,7 +288,8 @@ for i in range(1,NUM_FILES + 1):
 	else:
 		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
-		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {genomeIndex} {SPORKFasta} {BadFJtoGenomeFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,SPORKFasta=SPORKFasta,BadFJtoGenomeFile=BadFJtoGenomeFile)
+		fasta = os.path.join(FASTADIR,"{STEM}_FarJunctions.fa".format(STEM=STEM))
+		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {genomeIndex} {fasta} {BadFJtoGenomeFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,fasta=fasta,BadFJtoGenomeFile=BadFJtoGenomeFile)
 		print("BadFJ to genome: ${BadFJj1_id}")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		stdout,stderr = popen.communicate()
@@ -302,7 +303,7 @@ for i in range(1,NUM_FILES + 1):
 	else:
 		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
-		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {transcriptomeIndex} {SPORKFasta} {BadFJtotranscriptomeFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,transcriptomeIndex=transcriptomeIndex,SPORKFasta=SPORKFasta,BadFJtotranscriptomeFile=BadFJtotranscriptomeFile)
+		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {transcriptomeIndex} {fasta} {BadFJtotranscriptomeFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,transcriptomeIndex=transcriptomeIndex,fasta=fasta,BadFJtotranscriptomeFile=BadFJtotranscriptomeFile)
 		print("BadFJ to transcriptome")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		stdout,stderr = popen.communicate()
@@ -316,7 +317,7 @@ for i in range(1,NUM_FILES + 1):
 	else:
 		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
-		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {regIndex} {SPORKFasta} {BadFJtoRegFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,regIndex=regIndex,SPORKFasta=SPORKFasta,BadFJtoRegFile=BadFJtoRegFile)
+		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {regIndex} {fasta} {BadFJtoRegFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,regIndex=regIndex,fasta=fasta,BadFJtoRegFile=BadFJtoRegFile)
 		print("BadFJ to reg")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		stdout,stderr = popen.communicate()
@@ -332,7 +333,7 @@ for i in range(1,NUM_FILES + 1):
 		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
 		print("BadFJ to junc: ")
-		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {juncIndex} {SPORKFasta} {BadFJtoJuncFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,juncIndex=juncIndex,SPORKFasta=SPORKFasta,BadFJtoJuncFile=BadFJtoJuncFile)
+		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {juncIndex} {fasta} {BadFJtoJuncFile} | awk '{{print $4}}'".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,juncIndex=juncIndex,fasta=fasta,BadFJtoJuncFile=BadFJtoJuncFile)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		stdout,stderr = popen.communicate()
 		retcode = popen.returncode
