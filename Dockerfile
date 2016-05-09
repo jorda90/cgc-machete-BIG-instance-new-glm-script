@@ -4,7 +4,7 @@ MAINTAINER Gillian Lee Hsieh <glhsieh@stanford.edu>
 #RUN yum update -y && yum install -y wget git gcc unzip gcc-c++ zlib-devel openssl-devel sqlite-devel bzip2-devel ncurses-devel lapack-dev blas-dev
 RUN yum update -y && yum groupinstall -y 'Development Tools' && yum install -y wget \
 	bzip2-devel \
-	lapack-dev blas-dev
+	lapack-dev blas-dev \
 	ncurses-devel \
 	openssl-devel \
 	sqlite-devel \
@@ -31,11 +31,12 @@ RUN mkdir -p /src/Python /src/software/Python && \
 	cd Python-2.7.10 && \
 	./configure --prefix=/src/software/Python && \
 	make && \
-	make install && \
-	export PATH=/src/software/Python/bin:${PATH} && \
-	wget https://bootstrap.pypa.io/get-pip.py && \
+	make install
+RUN	PATH=/src/software/Python/bin:${PATH}
+RUN	wget https://bootstrap.pypa.io/get-pip.py && \
 	python get-pip.py && \
-	pip install scipy
+	pip install scipy && \
+	pip install numpy
 #INSTALL TBB (Threading Building Blocks) from Intel
 #Needed for intalling Bowtie1 and Bowtie2 with parallelism enabled (to use the -p argument).
 #RUN mkdir /src/TBB && \
