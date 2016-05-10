@@ -522,7 +522,6 @@ checkProcesses(processes)
 ##
 # Align unaligned files to the expanded reg junctions with indels
 AlignedIndels = os.path.join(CIRCPIPE_DIR,"orig/RegIndelAlignments")
-os.makedirs(AlignedIndels)
 
 
 #  To train the GLM, indel alignments are also created for the linear junctions.  The reference index of indels to the linear junctions is static and has already been created and is referenced above as "REG_INDEL_INDICES" on line 44.  The script AlignRegIndels calls bowtie to align reads that were unaligned the the KNIFE indices (in KNIFEdir/orig/unaligned/*.fq) to the REG_INDEL_INDICES, with the parameters of 1) approx 4 mismatches / 100 bases, maximum number N's = readlength, and no gapped alignments or read gaps.
@@ -555,7 +554,7 @@ print("Reg Indels Class Output")
 processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_18RegIndelsClassOutput.txt"),"w")
-	stdrr = open(os.path.join(LOG_DIR,str(index) + "_err_18RegIndelsClassOutput.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_18RegIndelsClassOutput.txt"),"w")
 	cmd = "{MACHETE}/RegIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NUMBASESAROUNDJUNC} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NUMBASESAROUNDJUNC=NUMBASESAROUNDJUNC,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
