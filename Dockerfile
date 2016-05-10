@@ -81,15 +81,6 @@ RUN mkdir /srv/src/samtools && \
 	./configure --without-curses && \
 	make && \
 	make install	
-
-#INSTALL Trim Galore
-RUN mkdir /srv/src/TrimGalore && \
-	cd /srv/src/TrimGalore && \
-	wget http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/trim_galore_v0.4.1.zip && \
-	unzip trim_galore_v0.4.1.zip && \
-	mv trim_galore_zip/* . && \
-	rm -rf trim_galore_zip && \
-ENV PATH=/srv/src/TrimGalore/:${PATH}
 #perl installation not neccessary since Development Tools, which yum installed earlier, includes Perl v5.10.1.
 #INSTALL Perl. Needed for knife. On sherlock v5.10.1, I'll grab the latest, however.
 #RUN mkdir /srv/src/Perl && \
