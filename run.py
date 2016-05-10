@@ -327,7 +327,7 @@ for i in range(1,NUM_FILES + 1):
 
 	
 	BadFJtoJuncFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoJunc.sam")
-	if os.path.exists(BadFJtoJunc):
+	if os.path.exists(BadFJtoJuncFile):
 		print("{BadFJtoJuncFile} exists. To realign, please manually delete this file first".format(BadFJtoJuncFile=BadFJtoJuncFile))
 	else:
 		stdout = open(os.path.join(BadFJStemDir,"out.txt"),"w")
