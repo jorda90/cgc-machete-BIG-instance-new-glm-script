@@ -357,7 +357,7 @@ for i in range(1,NUM_FILES + 1):
 	else:
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w") 
-		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {genomeBOWTIEPARAM} | awk '{{print $4}}'".format(MACHETE=MACHETE)
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {genomeBOWTIEPARAM} | awk '{{print $4}}'".format(MACHETE=MACHETE,genomeBOWTIEPARAM=genomeBOWTIEPARAM)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes = {}
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
