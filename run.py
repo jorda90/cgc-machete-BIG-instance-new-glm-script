@@ -370,11 +370,11 @@ for i in range(1,NUM_FILES + 1):
 	else:
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
-		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {transcriptomeBOWTIEPARAM} | awk '{{print $4}}'".format(transcriptomeBOWTIEPARAM=transcriptomeBOWTIEPARAM)
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {transcriptomeBOWTIEPARAM} | awk '{{print $4}}'".format(MACHETE=MACHETE,transcriptomeBOWTIEPARAM=transcriptomeBOWTIEPARAM)
 		processes = {}
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 		checkProcesses(processes)
-	pirnt("BadFJ_ver2 to transcriptome")
+	print("BadFJ_ver2 to transcriptome")
 
 	BadFJtoRegFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtoReg.sam")
 	if os.path.exists(BadFJtoRegFile):
@@ -475,7 +475,7 @@ for i in range(1,NumIndels + 1):
 	processes = {}
 	for index in range(1,NUM_FILES + 1):
 		stdout = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_11indexindels.txt".format(i=i,index=index)),"w")
-		stderr = open(os.path.join(LOG_DIR,"NumIndels(i}_{index}_err_11indexindels.txt".format(i=i,index=index)),"w")
+		stderr = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_err_11indexindels.txt".format(i=i,index=index)),"w")
 		cmd = "{MACHETE}/BowtieIndexFJIndels.sh {OUTPUT_DIR}/FarJuncIndels {i} {OUTPUT_DIR}/BowtieIndels {OUTPUT_DIR} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,i=i,index=index)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
