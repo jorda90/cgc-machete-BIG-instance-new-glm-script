@@ -6,6 +6,7 @@ import glob
 from argparse import ArgumentParser
 import pdb
 
+MACHETE = os.path.dirname(__file__)
 # goal is to create distant paired ends using my paired end finder
 # then use output to generate far junction library
 # then use output to align to bowtie
@@ -33,15 +34,17 @@ def checkProcesses(popenDict):
 		if retcode:
 			raise Exception("Command '{cmd}' failed with return code {retcode}. Log files are {stdout} and {stderr}.".format(cmd=cmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 
-description = ""
+description = "Required args: --circpipe-dir, --output-dir, --hg19Exons, and "
 
 parser = ArgumentParser(description=description)
-parser.add_argument("CIRCPIPE_DIR",help="Dir containing circ pipe output (incl linda's directories orig, circReads, logs, sample stats)")
-parser.add_argument("OUTPUT_DIR",help="Far Junc Dir")
-parser.add_argument("USERBPDIST",help="using 100000 (100Kb) so far for testing purposes")
-parser.add_argument("REFGENOME",help="HG19 vs HG38;could upgrade to HG38.")
-parser.add_argument("NUMBASESAROUNDJUNC",help="default for linda's is 8 for read lengths < 70 and 13 for read lengths > 70")
-parser.add_argument("NumIndels",help="current default = 5, arbitrary")
+parser.add_argument("--circpipe-dir",required=True,dest="CIRCPIPE_DIR",help="Dir containing circ pipe output (incl linda's directories orig, circReads, logs, sample stats)")
+parser.add_argument("--output-dir",required=True,dest="OUTPUT_DIR",help="Output directory for resuts. Directory path will be created recursively if it doesn't already exist. If it exists already, the directory will be deleted then created again.")
+parser.add_argument("--user-bp-dist",dest="USERBPDIST",type=int,default=1000,help="Default is %(default)s.")
+#parser.add_argument("REFGENOME",help="HG19 vs HG38;could upgrade to HG38.")
+parser.add_argument("--num-junc-bases",dest="NUMBASESAROUNDJUNC",help="default for linda's is 8 for read lengths < 70 and 13 for read lengths > 70")
+parser.add_argument("--numIndels",dest="NumIndels",type=int,default=5,help="Default is %(default)s.")
+parser.add_argument("--hg19Exons",required=True,dest="EXONS",help="Path to HG19Exons. Formerly called PICKLEDIR.")
+parser.add_argument("--reg-indel-indices",required=True,dest="REG_INDEL_INDICES",help="Path to files with names like hg19_junctions_reg_indels_1.1.bt2l,hg19_junctions_reg_indels_2.rev.1.bt2l ...")
 
 args = parser.parse_args()
 
@@ -52,27 +55,18 @@ if not os.path.isdir(OUTPUT_DIR):
 else:
 	shutil.rmtree(OUTPUT_DIR)
 	os.makedirs(OUTPUT_DIR)
-USERBPDIST = 100000 #args.USERBPDIST
+USERBPDIST = args.USERBPDIST
 REFGENOME = "HG19" #args.REFGENOME
 NUMBASESAROUNDJUNC = args.NUMBASESAROUNDJUNC
-NumIndels = 5 #args.NumIndels
+NumIndels = args.NumIndels
+EXONS = args.EXONS
 
 #end arg parsing
 
 
 ## REPLACE THESE THREE FIELDS AFTER INSTALLATION
-MACHETE="/scratch/users/nathankw/MACHETE" #nathankw - formerly called INSTALLDIR
 CIRCREF="/share/PI/horence/circularRNApipeline_Cluster/index" #nathankw - update this to path to reference libraries output by KNIFE (directory that contains hg19_genome, hg19_transcriptome, hg19_junctions_reg and hg19_junctions_scrambled bowtie indices). Probably will need to set this as a runtime parameter.
 REG_INDEL_INDICES="/home/data/IndelIndices"
-
-
-#if REFGENOME == "HG38":
-#	EXONS="/scratch/PI/horence/grch38_junctions"
-#elif REFGENOME == "HG19":
-EXONS="/home/data/HG19exons" #nathankw - formerly called PICKLEDIR
-#else:
-#	raise Exception("Incorrect value for REFGENOME. Must be one of HG19 or HG38.")
-
 
 ORIG_DIR = os.path.join(CIRCPIPE_DIR,"orig")
 UNALIGNEDDIR = os.path.join(ORIG_DIR,"unaligned")
