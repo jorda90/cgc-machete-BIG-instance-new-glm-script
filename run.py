@@ -34,17 +34,18 @@ def checkProcesses(popenDict):
 		if retcode:
 			raise Exception("Command '{cmd}' failed with return code {retcode}. Log files are {stdout} and {stderr}.".format(cmd=cmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 
-description = "Required args: --circpipe-dir, --output-dir, --hg19Exons, and "
+description = "Required args: --circpipe-dir, --output-dir, --hg19Exons, --reg-indel-indices, and --circref-dir."
 
 parser = ArgumentParser(description=description)
 parser.add_argument("--circpipe-dir",required=True,dest="CIRCPIPE_DIR",help="Dir containing circ pipe output (incl linda's directories orig, circReads, logs, sample stats)")
 parser.add_argument("--output-dir",required=True,dest="OUTPUT_DIR",help="Output directory for resuts. Directory path will be created recursively if it doesn't already exist. If it exists already, the directory will be deleted then created again.")
 parser.add_argument("--user-bp-dist",dest="USERBPDIST",type=int,default=1000,help="Default is %(default)s.")
 #parser.add_argument("REFGENOME",help="HG19 vs HG38;could upgrade to HG38.")
-parser.add_argument("--num-junc-bases",dest="NUMBASESAROUNDJUNC",help="default for linda's is 8 for read lengths < 70 and 13 for read lengths > 70")
+parser.add_argument("--num-junc-bases",dest="NUMBASESAROUNDJUNC",type=int,default=8,help="Default for linda's is 8 for read lengths < 70 and 13 for read lengths > 70.")
 parser.add_argument("--numIndels",dest="NumIndels",type=int,default=5,help="Default is %(default)s.")
 parser.add_argument("--hg19Exons",required=True,dest="EXONS",help="Path to HG19Exons. Formerly called PICKLEDIR.")
-parser.add_argument("--reg-indel-indices",required=True,dest="REG_INDEL_INDICES",help="Path to files with names like hg19_junctions_reg_indels_1.1.bt2l,hg19_junctions_reg_indels_2.rev.1.bt2l ...")
+parser.add_argument("--reg-indel-indices",required=True,dest="REG_INDEL_INDICES",help="Path to files with names like hg19_junctions_reg_indels_1.1.bt2l,hg19_junctions_reg_indels_2.rev.1.bt2l ... These are sometimes in a folder called IndelIndices.")
+parser.add_argument("--circref-dir",required=True,dest="CIRCREF",help="Path to reference libraries output by KNIFE - directory that contains hg19_genome, hg19_transcriptome, hg19_junctions_reg and hg19_junctions_scrambled bowtie indices.")
 
 args = parser.parse_args()
 
@@ -60,13 +61,11 @@ REFGENOME = "HG19" #args.REFGENOME
 NUMBASESAROUNDJUNC = args.NUMBASESAROUNDJUNC
 NumIndels = args.NumIndels
 EXONS = args.EXONS
+REG_INDEL_INDICES = args.REG_INDEL_INDICES
+CIRCREF = args.CIRCREF
 
 #end arg parsing
 
-
-## REPLACE THESE THREE FIELDS AFTER INSTALLATION
-CIRCREF="/share/PI/horence/circularRNApipeline_Cluster/index" #nathankw - update this to path to reference libraries output by KNIFE (directory that contains hg19_genome, hg19_transcriptome, hg19_junctions_reg and hg19_junctions_scrambled bowtie indices). Probably will need to set this as a runtime parameter.
-REG_INDEL_INDICES="/home/data/IndelIndices"
 
 ORIG_DIR = os.path.join(CIRCPIPE_DIR,"orig")
 UNALIGNEDDIR = os.path.join(ORIG_DIR,"unaligned")
