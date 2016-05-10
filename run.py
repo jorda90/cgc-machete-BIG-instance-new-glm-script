@@ -510,7 +510,7 @@ processes = {}
 for index in range(1,NumIndels + 1):
 	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_13filterIndels.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_13filterIndels.txt"),"w")
-	cmd = "{MACHETE}/FindAlignmentArtifact_SLURM.sh {OUTPUT_DIR} {NumBPOverlapAtJunc} {NumIndels} {MACHETE} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,NumIndels=NumIndels)
+	cmd = "{MACHETE}/FindAlignmentArtifact_SLURM.sh {OUTPUT_DIR} {NUMBASESAROUNDJUNC} {NumIndels} {MACHETE} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,NUMBASESAROUNDJUNC=NUMBASESAROUNDJUNC,NumIndels=NumIndels)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -556,7 +556,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_18RegIndelsClassOutput.txt"),"w")
 	stdrr = open(os.path.join(LOG_DIR,str(index) + "_err_18RegIndelsClassOutput.txt"),"w")
-	cmd = "{MACHETE}/RegIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NumBPOverlapAtJunc} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc,index=index)
+	cmd = "{MACHETE}/RegIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NUMBASESAROUNDJUNC} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NUMBASESAROUNDJUNC=NUMBASESAROUNDJUNC,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -571,7 +571,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_19FJIndelsClassOutput.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_19FJIndelsClassOutput.txt"),"w")
-	cmd = "{MACHETE}/FJIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NumBPOverlapAtJunc} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc,index=index)
+	cmd = "{MACHETE}/FJIndelsClassID.sh {OUTPUT_DIR} {CIRCPIPE_DIR} {NUMBASESAROUNDJUNC} {MACHETE} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,CIRCPIPE_DIR=CIRCPIPE_DIR,NUMBASESAROUNDJUNC=NUMBASESAROUNDJUNC,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
@@ -603,7 +603,7 @@ processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_17AppendRegGLM.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_17AppendGLM.txt"),"w")
-	cmd = "{MACHETE}/AddIndelstolinearGLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {NumBPOverlapAtJunc} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,NumBPOverlapAtJunc=NumBPOverlapAtJunc,index=index)
+	cmd = "{MACHETE}/AddIndelstolinearGLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {NUMBASESAROUNDJUNC} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,NUMBASESAROUNDJUNC=NUMBASESAROUNDJUNC,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
