@@ -365,7 +365,7 @@ for i in range(1,NUM_FILES + 1):
 	
 	print("BadFJ_ver2 to genome")
 	BadFJtotranscriptomeFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtotranscriptome.sam")
-	if os.path.exists(BadFJtotranscriptome):
+	if os.path.exists(BadFJtotranscriptomeFile):
 		print("{BadFJtotranscriptomeFile} exists. To realign, please manually delete this file first.".format(BadFJtotranscriptomeFile=BadFJtotranscriptomeFile))
 	else:
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
