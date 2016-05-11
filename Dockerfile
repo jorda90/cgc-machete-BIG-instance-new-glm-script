@@ -3,6 +3,7 @@ FROM centos:centos6
 MAINTAINER Gillian Lee Hsieh <glhsieh@stanford.edu>
 #RUN yum update -y && yum install -y wget git gcc unzip gcc-c++ zlib-devel openssl-devel sqlite-devel bzip2-devel ncurses-devel lapack-dev blas-dev
 RUN yum update -y && yum groupinstall -y 'Development Tools' && yum install -y wget \
+	bc \
 	bzip2-devel \
 	lapack-dev blas-dev \
 	ncurses-devel \
@@ -71,6 +72,13 @@ RUN mkdir /srv/src/Bowtie2 && \
 #	The Fedora RPMs for R have been ported to RHEL by the project Extra Packages for Enterprise Linux (EPEL)
 RUN rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm && yum install -y R
 #Installs R v3.2.3
+#INSTALL R packages chron and data.table.
+# chron: Chronological Objects which can Handle Dates and Times (https://cran.r-project.org/web/packages/chron/index.html)
+#	data.table: Extension of data.frame (https://cran.r-project.org/web/packages/data.table/data.table.pdf)
+RUN wget https://cran.r-project.org/src/contrib/chron_2.3-47.tar.gz && \
+		R CMD INSTALL chron_2.3-47.tar.gz && \
+		wget https://cran.r-project.org/src/contrib/data.table_1.9.6.tar.gz && \	
+		R CMD INSTALL data.table_1.9.6.tar.gz
 
 #INSTALL samtools/1.3. Needed for knife.
 RUN mkdir /srv/src/samtools && \
