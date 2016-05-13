@@ -13,7 +13,7 @@ TASK_ID=${3}
 StemFile=${2}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${StemFile}`
 
-if [ "$(ls -A ${1}/sorted_*${STEM}*)"=2 ]
+if [ "$(ls -A ${1}/${STEM}*)"=2 ]
 then
     echo "sorted ${STEM}files exists, skipping alphabetizing step"
 else
