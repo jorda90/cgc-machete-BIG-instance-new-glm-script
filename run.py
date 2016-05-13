@@ -25,6 +25,7 @@ def checkProcesses(popenDict):
 	"""
 	for popen in popenDict:
 		popen.communicate() #hangs until job finishes
+	for popen in popenDict:
 		retcode = popen.returncode
 		cmd = popenDict[popen]['cmd']
 		stdout = popenDict[popen]['stdout']
