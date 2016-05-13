@@ -526,7 +526,7 @@ for i in range(1,NumIndels + 1):
 	for index in range(1,NUM_FILES + 1):
 	 	stdout = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_15AlignRegIndels.txt".format(i=i,index=index)),"w")
 		stderr = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_err_15AlignRegIndels.txt".format(i=i,index=index)),"w")
-		cmd = "{MACHETE}/AlignUnalignedtoRegIndel.sh {CIRCPIPE_DIR} {i} {OUTPUT_DIR} {BOWTIEPARAMETERS} {REG_INDEL_INDICES} | awk '{{print $4}}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,i=i,OUTPUT_DIR=OUTPUT_DIR,BOWTIEPARAMETERS=BOWTIEPARAMETERS,REG_INDEL_INDICES=REG_INDEL_INDICES)
+		cmd = "{MACHETE}/AlignUnalignedtoRegIndel.sh {CIRCPIPE_DIR} {i} {OUTPUT_DIR} {BOWTIEPARAMETERS} {REG_INDEL_INDICES} {index} | awk '{{print $4}}'".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,i=i,OUTPUT_DIR=OUTPUT_DIR,BOWTIEPARAMETERS=BOWTIEPARAMETERS,REG_INDEL_INDICES=REG_INDEL_INDICES,index=index)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 	checkProcesses(processes)
