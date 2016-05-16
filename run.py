@@ -200,18 +200,19 @@ checkProcesses(processes)
 ## MakeJunctions.py takes in FJDir/DistantPEFiles/sorted__chrA_Distant_PE_frequency.txt, and outputs FJDir/fasta/<STEM>/<STEM>_chrAFarJunctions.fa.  It reads in the discordant windows, and searches the pickle file for all exons names/exon locations/ exon sequences on either the sense or antisense strands within the discordant windows.  Then it makes all pairs of possible exon junctions. All sequences are 300 base pairs long - 150 bases on each side of the breakpoint.  For exons that are fewer than 150 bases, the remainder of the 150 bases is padded with N's.  All pairs include fusions between two exons that are +/+, +/-, -/+, and -/-.  In the case that a sense and antisense exon are fused, then the sequence listed is the exact sequence that would occur if the fusion was read from the 5'->3' direction.  If the generated sequence was BLATted, the correct "strands" would appear in BLAT.  Similarly, for (-)/(-) exon pairs, if the generated sequence was BLATted, the exons would appear on the (-) strand in BLAT.
 ## THIS IS DIFFERENT IN KNIFE.  In KNIFE, if a (-)/(-) pair was BLATted, it would look as if it were +/+ because the KNIFE reverse complements (-) sequences.  Additionally in KNIFE, there is no way to detect inversions because -/+ and +/- fasta sequences are not generated.
 print("make fusion fasta files")
-processes = {}
 for i in range(1,25):
+	processes = {}
 	if i == 23:
 		i = "X"
 	elif i == 24:
 		i = "Y"
-	stdout = open(os.path.join(LOG_DIR,str(i) + "_out_5makefasta.txt"),"w")
-	stderr = open(os.path.join(LOG_DIR,str(i) + "_err_5makefasta.txt"),"w")
-	cmd = "{MACHETE}/makeJunctions.sh {EXONS} {OUTPUT_DIR} {i} {MACHETE}".format(MACHETE=MACHETE,EXONS=EXONS,OUTPUT_DIR=OUTPUT_DIR,i=i)
-	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
-	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
-checkProcesses(processes)
+	for index in range(1,NUM_FILES + 1):
+		stdout = open(os.path.join(LOG_DIR,str(i) + "_out_5makefasta.txt"),"w")
+		stderr = open(os.path.join(LOG_DIR,str(i) + "_err_5makefasta.txt"),"w")
+		cmd = "{MACHETE}/makeJunctions.sh {EXONS} {OUTPUT_DIR} {i} {MACHETE} {index}".format(MACHETE=MACHETE,EXONS=EXONS,OUTPUT_DIR=OUTPUT_DIR,i=i,index=index)
+		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+	checkProcesses(processes)
 
 
 ##make single FJ fasta from all the fastas and then call bowtie indexer
