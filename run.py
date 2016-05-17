@@ -301,8 +301,11 @@ for i in range(1,NUM_FILES + 1):
 	stderr = open(os.path.join(LOG_DIR,str(STEM) + "_err_6BadJunc.txt"),"w")
 	cmd = "{MACHETE}/LenientBadFJ_SLURM.sh ${FarJuncFasta} ${BadFJver2Dir} ${OUTPUT_DIR} ${MACHETE}".format(MACHETE=MACHETE,FarJuncFasta=FarJuncFasta,BadFJver2Dir=BadFJver2Dir,OUTPUT_DIR=OUTPUT_DIR)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
-	stdout,stderr = popen.communicate()
-
+	stdout.close()
+	stderr.close()
+	retcode = popen.returncode
+	if retcode:
+		raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 	BadFJtoGenomeFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoGenome.sam")
 	if os.path.exists(BadFJtoGenomeFile):
 		print("{BadFJtoGenomeFile} exists. To realign, please manually delete this file first".format(BadFJtoGenomeFile=BadFJtoGenomeFile))
@@ -313,10 +316,11 @@ for i in range(1,NUM_FILES + 1):
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {genomeIndex} {fasta} {BadFJtoGenomeFile}".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,genomeIndex=genomeIndex,fasta=fasta,BadFJtoGenomeFile=BadFJtoGenomeFile)
 		print("BadFJ to genome: ${BadFJj1_id}")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
-		stdout,stderr = popen.communicate()
+		stdout.close()
+		stderr.close()
 		retcode = popen.returncode
 		if retcode:
-			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 
 	BadFJtotranscriptomeFile = os.path.join(BadFJStemDir,STEM + "__BadFJtotranscriptome.sam")
 	if os.path.exists(BadFJtotranscriptomeFile):
@@ -327,10 +331,11 @@ for i in range(1,NUM_FILES + 1):
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {transcriptomeIndex} {fasta} {BadFJtotranscriptomeFile}".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,transcriptomeIndex=transcriptomeIndex,fasta=fasta,BadFJtotranscriptomeFile=BadFJtotranscriptomeFile)
 		print("BadFJ to transcriptome")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
-		stdout,stderr = popen.communicate()
+		stdout.close()
+		stderr.close()
 		retcode = popen.returncode
 		if retcode:
-			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 
 	BadFJtoRegFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoReg.sam")
 	if os.path.exists(BadFJtoRegFile):
@@ -341,10 +346,11 @@ for i in range(1,NUM_FILES + 1):
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {regIndex} {fasta} {BadFJtoRegFile}".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,regIndex=regIndex,fasta=fasta,BadFJtoRegFile=BadFJtoRegFile)
 		print("BadFJ to reg")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
-		stdout,stderr = popen.communicate()
+		stdout.close()
+		stderr.close()
 		retcode = popen.returncode
 		if retcode:
-			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 
 	
 	BadFJtoJuncFile = os.path.join(BadFJStemDir,STEM + "_BadFJtoJunc.sam")
@@ -356,10 +362,11 @@ for i in range(1,NUM_FILES + 1):
 		print("BadFJ to junc: ")
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {juncIndex} {fasta} {BadFJtoJuncFile}".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,juncIndex=juncIndex,fasta=fasta,BadFJtoJuncFile=BadFJtoJuncFile)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
-		stdout,stderr = popen.communicate()
+		stdout.close()
+		stderr.close()
 		retcode = popen.returncode
 		if retcode:
-			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
+			raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 
 
 
@@ -392,6 +399,7 @@ for i in range(1,NUM_FILES + 1):
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {transcriptomeBOWTIEPARAM}".format(MACHETE=MACHETE,transcriptomeBOWTIEPARAM=transcriptomeBOWTIEPARAM)
+		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes = {}
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 		checkProcesses(processes)
@@ -404,6 +412,10 @@ for i in range(1,NUM_FILES + 1):
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {regBOWTIEPARAM}".format(MACHETE=MACHETE,regBOWTIEPARAM=regBOWTIEPARAM)
+		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+		processes = {}
+		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+		checkProcesses(processes)
 	print("BadFJ_ver2 to reg")
 
 	BadFJtoJuncFile = os.path.join(BadFJver2Dir,STEM + "_BadFJtoJunc.sam")	
@@ -413,6 +425,10 @@ for i in range(1,NUM_FILES + 1):
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
 		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {juncBOWTIEPARAM}".format(MACHETE=MACHETE,juncBOWTIEPARAM=juncBOWTIEPARAM)
+		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+		processes = {}
+		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+		checkProcesses(processes)
 	print("BadFJ_ver2 to junc")
 
 
