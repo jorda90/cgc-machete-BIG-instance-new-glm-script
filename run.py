@@ -276,7 +276,7 @@ for i in range(1,NUM_FILES + 1):
 	if retcode:
 		raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 	STEM = open(stdout.name,'r').read().strip()
-	FarJuncFasta = glob.glob(os.path.join(FASTADIR,STEM,"*FarJunctions.fa"))
+	FarJuncFasta = glob.glob(os.path.join(FASTADIR,STEM + "*FarJunctions.fa"))
 	BadFJStemDir =os.path.join(BadFJDir,STEM)
 	if  os.path.isdir(BadFJStemDir):
 		shutil.rmtree(BadFJStemDir)
@@ -300,6 +300,7 @@ for i in range(1,NUM_FILES + 1):
 	stdout = open(os.path.join(LOG_DIR,str(STEM) + "_out_6BadJunc.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(STEM) + "_err_6BadJunc.txt"),"w")
 	cmd = "{MACHETE}/LenientBadFJ_SLURM.sh ${FarJuncFasta} ${BadFJver2Dir} ${OUTPUT_DIR} ${MACHETE}".format(MACHETE=MACHETE,FarJuncFasta=FarJuncFasta,BadFJver2Dir=BadFJver2Dir,OUTPUT_DIR=OUTPUT_DIR)
+	pdb.set_trace()
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	stdout.close()
 	stderr.close()
