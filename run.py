@@ -243,13 +243,18 @@ juncIndex = os.path.join(CIRCREF,"hg19_junctions_scrambled")
 BOWTIEPARAM="-f --no-sq --no-unal --score-min L,0,-0.24 --n-ceil L,0,100 -p 4 --np 0 --rdg 50,50 --rfg 50,50"
 
 for i in range(1,NUM_FILES + 1):
+	pdb.set_trace()
+	stdout = open(os.path.join(LOG_DIR,str(i) + "_out_getStem.txt","w"))
+	stderr = open(os.path.join(LOG_DIR,str(i) + "_err_getStem.txt","w"))
 	stemCmd = "awk 'FNR == '{i}' {{print $1}}' {StemFile}".format(i=i,StemFile=StemFile)
-	popen = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
-	stdout,stderr = popen.communicate()	
+	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+	popen.communicate()	
+	stdout.close()
+	stderr.close()
 	retcode = popen.returncode
 	if retcode:
-		raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout,stderr=stderr))
-	STEM = stdout
+		raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
+	STEM = open(stdout.name,'r').read().strip()
 	FarJuncFasta = glob.glob(os.path.join(FASTADIR,"STEM","*FarJunctions.fa"))
 	BadFJStemDir =os.path.join(BadFJDir,STEM)
 	if  os.path.isdir(BadFJStemDir):
