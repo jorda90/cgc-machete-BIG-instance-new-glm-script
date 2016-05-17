@@ -185,7 +185,7 @@ for index in range(1,NUM_FILES + 1):
 checkProcesses(processes)
 	
 
-print("Outputting Mismatched paired ends: job ${j3_id}")
+print("Outputting Mismatched paired ends")
 ## Because there are lot of repeat locations in the _distant_pairs.txt file generated above, the DistantPE_Counter.py script is called by the shell of the same name to 1) eliminate duplicate locations.  Another early problem was that the fasta generated later was too enormous to run in a timely fashion so the distant_pairs.txt file is split by this script into 24 smaller files based on the chromosome # of the upstream partner.
 ## The shell DistantPE_Counter_genome_ENCODE.sh takes in the FarJunction output directory and MACHETE installation directory and outputs <FJDir>/DistantPEFiles/<STEM>/chr1,2,3,4,...,X,Y_Distant_PE_frequency.txt
 #  The chrA_Distant_PE_frequency.txt files contain three columns: chrA:M-N, chrB:P-Q, and R, where R is the number of times that these two exact windows were matched together.  R could be used to cull the fasta file if it gets too large, but at this point we are still looking for junctions between exons if only one read pair aligned discordantly.
@@ -276,7 +276,8 @@ for i in range(1,NUM_FILES + 1):
 	if retcode:
 		raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 	STEM = open(stdout.name,'r').read().strip()
-	FarJuncFasta = glob.glob(os.path.join(FASTADIR,STEM + "*FarJunctions.fa"))
+	FarJuncFasta = glob.glob(os.path.join(FASTADIR,STEM + "*FarJunctions.fa")) #should be a list of size 1
+	FarJuncFasta = FarJuncFasta[0]
 	BadFJStemDir =os.path.join(BadFJDir,STEM)
 	if  os.path.isdir(BadFJStemDir):
 		shutil.rmtree(BadFJStemDir)
@@ -299,7 +300,7 @@ for i in range(1,NUM_FILES + 1):
 	processes = {}
 	stdout = open(os.path.join(LOG_DIR,str(STEM) + "_out_6BadJunc.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(STEM) + "_err_6BadJunc.txt"),"w")
-	cmd = "{MACHETE}/LenientBadFJ_SLURM.sh ${FarJuncFasta} ${BadFJver2Dir} ${OUTPUT_DIR} ${MACHETE}".format(MACHETE=MACHETE,FarJuncFasta=FarJuncFasta,BadFJver2Dir=BadFJver2Dir,OUTPUT_DIR=OUTPUT_DIR)
+	cmd = "{MACHETE}/LenientBadFJ_SLURM.sh {FarJuncFasta} {BadFJver2Dir} {OUTPUT_DIR} {MACHETE}".format(MACHETE=MACHETE,FarJuncFasta=FarJuncFasta,BadFJver2Dir=BadFJver2Dir,OUTPUT_DIR=OUTPUT_DIR)
 	pdb.set_trace()
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	stdout.close()
@@ -315,7 +316,7 @@ for i in range(1,NUM_FILES + 1):
 		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
 		fasta = os.path.join(FASTADIR,"{STEM}_FarJunctions.fa".format(STEM=STEM))
 		cmd = "{MACHETE}/BowtieAligner.batch.sh {BOWTIEPARAM} {genomeIndex} {fasta} {BadFJtoGenomeFile}".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,genomeIndex=genomeIndex,fasta=fasta,BadFJtoGenomeFile=BadFJtoGenomeFile)
-		print("BadFJ to genome: ${BadFJj1_id}")
+		print("BadFJ to genome")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		stdout.close()
 		stderr.close()
@@ -386,7 +387,7 @@ for i in range(1,NUM_FILES + 1):
 	else:
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w") 
-		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {genomeBOWTIEPARAM}".format(MACHETE=MACHETE,genomeBOWTIEPARAM=genomeBOWTIEPARAM)
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh \"{genomeBOWTIEPARAM}\"".format(MACHETE=MACHETE,genomeBOWTIEPARAM=genomeBOWTIEPARAM)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes = {}
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
