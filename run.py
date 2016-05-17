@@ -72,7 +72,7 @@ ORIG_DIR = os.path.join(CIRCPIPE_DIR,"orig")
 UNALIGNEDDIR = os.path.join(ORIG_DIR,"unaligned")
 GLM_DIR = os.path.join(CIRCPIPE_DIR,"circReads/glmReports")
 DistantPEDir = os.path.join(OUTPUT_DIR,"DistantPEFiles")
-if not os.path.exists(DistantPEFiles):
+if not os.path.exists(DistantPEDir):
 	os.mkdir(DistantPEDir)
 FASTADIR = os.path.join(OUTPUT_DIR,"fasta")
 if not os.path.exists(FASTADIR):
@@ -268,7 +268,7 @@ for i in range(1,NUM_FILES + 1):
 	stdout = open(os.path.join(LOG_DIR,str(i) + "_out_getStem.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(i) + "_err_getStem.txt"),"w")
 	stemCmd = "awk 'FNR == '{i}' {{print $1}}' {StemFile}".format(i=i,StemFile=StemFile)
-	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+	popen = subprocess.Popen(stemCmd,stdout=stdout,stderr=stderr,shell=True)
 	popen.communicate()	
 	stdout.close()
 	stderr.close()
