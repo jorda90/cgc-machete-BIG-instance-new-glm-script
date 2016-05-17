@@ -400,7 +400,7 @@ for i in range(1,NUM_FILES + 1):
 	else:
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
-		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {transcriptomeBOWTIEPARAM}".format(MACHETE=MACHETE,transcriptomeBOWTIEPARAM=transcriptomeBOWTIEPARAM)
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh \"{transcriptomeBOWTIEPARAM}\"".format(MACHETE=MACHETE,transcriptomeBOWTIEPARAM=transcriptomeBOWTIEPARAM)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes = {}
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -413,7 +413,7 @@ for i in range(1,NUM_FILES + 1):
 	else:
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
-		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {regBOWTIEPARAM}".format(MACHETE=MACHETE,regBOWTIEPARAM=regBOWTIEPARAM)
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh \"{regBOWTIEPARAM}\"".format(MACHETE=MACHETE,regBOWTIEPARAM=regBOWTIEPARAM)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes = {}
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -426,7 +426,7 @@ for i in range(1,NUM_FILES + 1):
 	else:
 		stdout = open(os.path.join(BadFJver2Dir,"out.txt"),"w")
 		stderr = open(os.path.join(BadFJver2Dir,"err.txt"),"w")
-		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh {juncBOWTIEPARAM}".format(MACHETE=MACHETE,juncBOWTIEPARAM=juncBOWTIEPARAM)
+		cmd = "{MACHETE}/BowtieAligner_BadFJv2.sh \"{juncBOWTIEPARAM}\"".format(MACHETE=MACHETE,juncBOWTIEPARAM=juncBOWTIEPARAM)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes = {}
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
