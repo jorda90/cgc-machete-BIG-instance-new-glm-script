@@ -54,9 +54,9 @@ CIRCPIPE_DIR = args.CIRCPIPE_DIR
 OUTPUT_DIR = args.OUTPUT_DIR
 if not os.path.isdir(OUTPUT_DIR):
 	os.makedirs(OUTPUT_DIR)
-else:
-	shutil.rmtree(OUTPUT_DIR)
-	os.makedirs(OUTPUT_DIR)
+#else:
+#	shutil.rmtree(OUTPUT_DIR)
+#	os.makedirs(OUTPUT_DIR)
 USERBPDIST = args.USERBPDIST
 REFGENOME = "HG19" #args.REFGENOME
 NUMBASESAROUNDJUNC = args.NUMBASESAROUNDJUNC
@@ -72,31 +72,53 @@ ORIG_DIR = os.path.join(CIRCPIPE_DIR,"orig")
 UNALIGNEDDIR = os.path.join(ORIG_DIR,"unaligned")
 GLM_DIR = os.path.join(CIRCPIPE_DIR,"circReads/glmReports")
 DistantPEDir = os.path.join(OUTPUT_DIR,"DistantPEFiles")
-os.mkdir(DistantPEDir)
+if not os.path.exists(DistantPEFiles):
+	os.mkdir(DistantPEDir)
 FASTADIR = os.path.join(OUTPUT_DIR,"fasta")
-os.mkdir(FASTADIR)
+if not os.path.exists(FASTADIR):
+	os.mkdir(FASTADIR)
 BOWTIE_DIR = os.path.join(OUTPUT_DIR,"BowtieIndex")
-os.mkdir(BOWTIE_DIR)
+if not os.path.exists(BOWTIE_DIR):
+	os.mkdir(BOWTIE_DIR)
 FARJUNCDIR = os.path.join(OUTPUT_DIR,"FarJunctionAlignments")
-os.mkdir(FARJUNCDIR)
+if not os.path.exists(FARJUNCDIR):
+	os.mkdir(FARJUNCDIR)
 SECONDFARJUNCDIR = os.path.join(OUTPUT_DIR,"FarJuncSecondary")
-os.mkdir(SECONDFARJUNCDIR)
+if not os.path.exists(SECONDFARJUNCDIR):
+	os.mkdir(SECONDFARJUNCDIR)
 BadFJDir = os.path.join(OUTPUT_DIR,"BadFJ")
-os.mkdir(BadFJDir)
+if not os.path.exists(BadFJDir):
+	os.mkdir(BadFJDir)
 StemFile = os.path.join(OUTPUT_DIR,"StemList.txt")
 
-os.mkdir(os.path.join(OUTPUT_DIR,"reports"))
+reportsDir = os.path.join(OUTPUT_DIR,"reports")
+if not os.path.exists(reportsDir):
+	os.mkdir(reportsDir)
 LOG_DIR = os.path.join(OUTPUT_DIR,"err_and_out")
-os.mkdir(LOG_DIR)
-os.mkdir(os.path.join(OUTPUT_DIR,"BowtieIndels"))
-os.mkdir(os.path.join(OUTPUT_DIR,"FarJuncIndels"))
-os.mkdir(os.path.join(SECONDFARJUNCDIR,"AlignedIndels"))
-os.mkdir(os.path.join(OUTPUT_DIR,"IndelsHistogram"))
-os.mkdir(os.path.join(OUTPUT_DIR,"reports/AppendedReports"))
+if not os.path.exists(LOG_DIR):
+	os.mkdir(LOG_DIR)
+
+BowtieIndelsDir = os.path.join(OUTPUT_DIR,"BowtieIndels")
+if not os.path.exists(BowtieIndelsDir):
+	os.mkdir(BowtieIndelsDir)
+FarJuncIndelsDir = os.path.join(OUTPUT_DIR,"FarJuncIndels")
+if not os.path.exists(FarJuncIndelsDir):
+	os.mkdir(FarJuncIndelsDir)
+AlignedIndelsDir = os.path.join(SECONDFARJUNCDIR,"AlignedIndels")
+if not os.path.exists(AlignedIndelsDir):
+	os.mkdir(AlignedIndelsDir)
+IndelsHistogramDir = os.path.join(OUTPUT_DIR,"IndelsHistogram")
+if not os.path.exists(IndelsHistogramDir):
+	os.mkdir(IndelsHistogramDir)
+AppendedReportsDir = os.path.join(OUTPUT_DIR,"reports/AppendedReports")
+if not os.path.exists(AppendedReportsDir):
+	os.mkdir(AppendedReportsDir)
 appendGlmDir = os.path.join(GLM_DIR,"AppendGLM")
 if not os.path.isdir(appendGlmDir):
 	os.mkdir(os.path.join(GLM_DIR,"AppendGLM"))
-os.mkdir(os.path.join(OUTPUT_DIR,"GLM_classInput"))
+GLM_classInputDir = os.path.join(OUTPUT_DIR,"GLM_classInput")
+if not os.path.exists(GLM_classInputDir):
+	os.mkdir(GLM_classInputDir)
 
 subprocess.check_call("rm -f {LOG_DIR}/*".format(LOG_DIR=LOG_DIR),shell=True)
 subprocess.check_call("rm -f {LOG_DIR}/MasterError.txt".format(LOG_DIR=LOG_DIR),shell=True)
@@ -243,7 +265,6 @@ juncIndex = os.path.join(CIRCREF,"hg19_junctions_scrambled")
 BOWTIEPARAM="-f --no-sq --no-unal --score-min L,0,-0.24 --n-ceil L,0,100 -p 4 --np 0 --rdg 50,50 --rfg 50,50"
 
 for i in range(1,NUM_FILES + 1):
-	pdb.set_trace()
 	stdout = open(os.path.join(LOG_DIR,str(i) + "_out_getStem.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(i) + "_err_getStem.txt"),"w")
 	stemCmd = "awk 'FNR == '{i}' {{print $1}}' {StemFile}".format(i=i,StemFile=StemFile)
@@ -476,7 +497,7 @@ for i in range(1,NumIndels + 1):
 	for index in range(1,NUM_FILES + 1):
 		stdout = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_out_11indexindels.txt".format(i=i,index=index)),"w")
 		stderr = open(os.path.join(LOG_DIR,"NumIndels{i}_{index}_err_11indexindels.txt".format(i=i,index=index)),"w")
-		cmd = "{MACHETE}/BowtieIndexFJIndels.sh {OUTPUT_DIR}/FarJuncIndels {i} {OUTPUT_DIR}/BowtieIndels {OUTPUT_DIR} {index}".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,i=i,index=index)
+		cmd = "{MACHETE}/BowtieIndexFJIndels.sh {FarJuncIndelsDir} {i} {BowtieIndelsDir} {OUTPUT_DIR} {index}".format(MACHETE=MACHETE,FarJuncIndelsDir=FarJuncIndelsDir,BowtieIndelsDir=BowtieIndelsDir,OUTPUT_DIR=OUTPUT_DIR,i=i,index=index)
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 	checkProcesses(processes)
@@ -522,7 +543,8 @@ checkProcesses(processes)
 ##
 # Align unaligned files to the expanded reg junctions with indels
 AlignedIndels = os.path.join(CIRCPIPE_DIR,"orig/RegIndelAlignments")
-
+if not os.path.exists(AlignedIndels):
+	os.makedirs(AlignedIndels)
 
 #  To train the GLM, indel alignments are also created for the linear junctions.  The reference index of indels to the linear junctions is static and has already been created and is referenced above as "REG_INDEL_INDICES" on line 44.  The script AlignRegIndels calls bowtie to align reads that were unaligned the the KNIFE indices (in KNIFEdir/orig/unaligned/*.fq) to the REG_INDEL_INDICES, with the parameters of 1) approx 4 mismatches / 100 bases, maximum number N's = readlength, and no gapped alignments or read gaps.
 #j16_id
