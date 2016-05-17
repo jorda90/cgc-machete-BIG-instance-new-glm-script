@@ -276,7 +276,7 @@ for i in range(1,NUM_FILES + 1):
 	if retcode:
 		raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 	STEM = open(stdout.name,'r').read().strip()
-	FarJuncFasta = glob.glob(os.path.join(FASTADIR,"STEM","*FarJunctions.fa"))
+	FarJuncFasta = glob.glob(os.path.join(FASTADIR,STEM,"*FarJunctions.fa"))
 	BadFJStemDir =os.path.join(BadFJDir,STEM)
 	if  os.path.isdir(BadFJStemDir):
 		shutil.rmtree(BadFJStemDir)
