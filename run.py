@@ -244,8 +244,8 @@ BOWTIEPARAM="-f --no-sq --no-unal --score-min L,0,-0.24 --n-ceil L,0,100 -p 4 --
 
 for i in range(1,NUM_FILES + 1):
 	pdb.set_trace()
-	stdout = open(os.path.join(LOG_DIR,str(i) + "_out_getStem.txt","w"))
-	stderr = open(os.path.join(LOG_DIR,str(i) + "_err_getStem.txt","w"))
+	stdout = open(os.path.join(LOG_DIR,str(i) + "_out_getStem.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(i) + "_err_getStem.txt"),"w")
 	stemCmd = "awk 'FNR == '{i}' {{print $1}}' {StemFile}".format(i=i,StemFile=StemFile)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	popen.communicate()	
