@@ -1,4 +1,6 @@
-#!/bin/bash -eu
+#!/bin/bash -u
+
+#nathankw - Note that I didn't add -e to the shebang line since this script is using grep, which returns 1 if there isn't a match.
 
 #  parse_FJ_ID_for_GLM.sh
 #  
@@ -23,7 +25,7 @@ FJ_Outputfile=${GLM_class_inputs}${STEM}_1__output_FJ.txt
 
 for file in ${1}/reports/IDs*${STEM}*.txt
 do
-sed '1d' ${file} | grep -v "Unmapped\|unaligned" > ${FJ_Outputfile}
+	sed '1d' ${file} | grep -v "Unmapped\|unaligned" > ${FJ_Outputfile}
 done
 
 echo "parse_FJ_ID_for_GLM.sh complete for ${STEM} - check for ${GLM_class_inputs}${STEM}__output_FJ.txt" >> ${1}/MasterError.txt
