@@ -15,7 +15,7 @@ FJDir=${1} ## MACHETE output dir
 OrigDir=${2} ## KNIFE alignment files
 Window=${3} ## Num bases that read must overlap junction to be considered
 INSTALLDIR=${4} ## MACHETE installation directory
-TASK_ID=${6}
+TASK_ID=${5}
 
 STEMFILE=${1}/StemList.txt
 STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
