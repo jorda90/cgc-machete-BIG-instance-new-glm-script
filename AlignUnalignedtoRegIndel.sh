@@ -26,7 +26,9 @@ mkdir -p ${AlignedIndels}
 
 IndelIndex="${5}/hg19_junctions_reg_indels_${2}"
 
-if [ "$(ls -A ${AlignedIndels}unaligned_${STEM}_*_indel${2}.sam)" ]
+#if [ "$(ls -A ${AlignedIndels}unaligned_${STEM}_*_indel${2}.sam)" ]
+samFiles=$(find ${AlignedIndels} -name unaligned_${STEM}_*_indel${2}.sam -print)
+if [[ -n $samFiles ]]
 then
     echo "Reg Alignments to ${STEM} exist, skipping step" >> ${3}/MasterError.txt
 else
