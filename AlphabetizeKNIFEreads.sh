@@ -21,11 +21,11 @@ for file in ${1}/*${STEM}*
 do
   FILENAME=$(basename $file)
   SORTEDNAME=sorted_${FILENAME}
-#    if ! [[ "$FILENAME" = *sorted* ]]
-#    then
-  head -n 2 ${file} > ${SORTINGDIR}/${SORTEDNAME}
-  tail -n +3 ${file} | sort -k 1 >> ${SORTINGDIR}/${SORTEDNAME}
-#    fi
+  if ! [[ "$FILENAME" = *sorted* ]]
+  then
+    head -n 2 ${file} > ${SORTINGDIR}/${SORTEDNAME}
+    tail -n +3 ${file} | sort -k 1 >> ${SORTINGDIR}/${SORTEDNAME}
+  fi
 done;
 #fi
 
