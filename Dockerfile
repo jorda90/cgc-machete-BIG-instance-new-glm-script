@@ -1,11 +1,12 @@
 FROM centos:centos6
 #comes with python/2.7.5
-MAINTAINER Gillian Lee Hsieh <glhsieh@stanford.edu>
+MAINTAINER Nathaniel Watson <nathankw@stanford.edu>
 #RUN yum update -y && yum install -y wget git gcc unzip gcc-c++ zlib-devel openssl-devel sqlite-devel bzip2-devel ncurses-devel lapack-dev blas-dev
 RUN yum update -y && yum groupinstall -y 'Development Tools' && yum install -y wget \
 	bc \
 	bzip2-devel \
-	lapack-dev blas-dev \
+	lapack-dev \
+	blas-dev \
 	ncurses-devel \
 	openssl-devel \
 	sqlite-devel \
