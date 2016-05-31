@@ -1,47 +1,13 @@
-FROM centos:centos6
-#comes with python/2.7.5
+FROM nathankw/centos6
+#Comes with Python v2.7.10, JRE v1.8.0_91, and R v3.2.3.
+#Also comes with Perl v5.10.1, which was installed as part of the "Development Tools" package.
+#The directories /srv/src and /srv/software are created in the base image. 
 MAINTAINER Nathaniel Watson <nathankw@stanford.edu>
-#RUN yum update -y && yum install -y wget git gcc unzip gcc-c++ zlib-devel openssl-devel sqlite-devel bzip2-devel ncurses-devel lapack-dev blas-dev
-RUN yum update -y && yum groupinstall -y 'Development Tools' && yum install -y wget \
-	bc \
-	bzip2-devel \
-	lapack-dev \
-	blas-dev \
-	ncurses-devel \
-	openssl-devel \
-	sqlite-devel \
-	zlib-devel \
-#lapack-dev blas-dev for installing scipy in Python
-#Development Tools installs 28 packages, and their dependencies. The number of dependencies installed on a base image of centos:centos6 were 101, notably of which are Perl v5.10.1, git v1.7.1, unzip
-ENV DATA=/home/data IndelIndices=IndelIndices HG19exons=HG19exons circularRNApipeline_Standalone=circularRNApipeline_Standalone
-RUN mkdir /srv/software
-#gcc-c++ needed for running g++ to make tools, such as Bowtie2
-#gcc needed for installing Python
-RUN git clone https://github.com/nathankw/KNIFE.git /srv/software/knife && \
-	cd /srv/software/knife && \	
-	git remote add upstream https://github.com/lindaszabo/KNIFE.git && \
-	git pull
-RUN git clone https://github.com/nathankw/MACHETE.git /srv/software/machete && \
-	cd /srv/software/machete && \
-	git remote add upstream https://github.com/gillianhsieh/MACHETE && \
-	git pull
-#INSTALL Python 2.7.10
-RUN mkdir -p /srv/src/Python /srv/software/Python && \
-	cd /srv/src/Python && \
-	wget https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz && \
-	tar -zxf Python-2.7.10.tgz && \
-	cd Python-2.7.10 && \
-	./configure --prefix=/srv/software/Python && \
-	make && \
-	make install
-ENV	PATH=/srv/src/software/Python/bin:${PATH}
-RUN	wget https://bootstrap.pypa.io/get-pip.py && \
-	python get-pip.py && \
-	pip install scipy && \
-	pip install numpy && \
-	pip install cutadapt
-#INSTALL TBB (Threading Building Blocks) from Intel
-#Needed for intalling Bowtie1 and Bowtie2 with parallelism enabled (to use the -p argument).
+RUN yum install -y bc 
+RUN git clone https://github.com/ericff/KNIFE.git /srv/software/knife
+RUN git clone https://github.com/nathankw/MACHETE.git /srv/software/machete
+#INSTALL TBB (Threading Building Blocks) from Intel.
+# Can be used when intalling Bowtie1 and Bowtie2 in order to use TBB over pthreads for managing parallel processes.
 #RUN mkdir /srv/src/TBB && \
 #	cd /srv/src/TBB && \
 #	wget https://www.threadingbuildingblocks.org/sites/default/files/software_releases/source/tbb44_20160128oss_src_0.tgz && \
@@ -49,6 +15,7 @@ RUN	wget https://bootstrap.pypa.io/get-pip.py && \
 #	cd tbb44_20160128oss && \
 #	gmake && \
 #	. build/linux_intel64_gcc_cc4.4.7_libc2.12_kernel4.1.19_release/tbbvars.sh
+
 #INSTALL Bowtie1.1.1
 RUN mkdir /srv/src/Bowtie1 && \
 	cd /srv/src/Bowtie1 && \
@@ -68,11 +35,6 @@ RUN mkdir /srv/src/Bowtie2 && \
 #	make WITH_TBB=1 && \
 	make && \
 	make install
-#INSTALL R >= 3.0.2
-#As stated in https://cran.r-project.org/bin/linux/redhat/README: 
-#	The Fedora RPMs for R have been ported to RHEL by the project Extra Packages for Enterprise Linux (EPEL)
-RUN rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm && yum install -y R
-#Installs R v3.2.3
 #INSTALL R packages chron and data.table.
 # chron: Chronological Objects which can Handle Dates and Times (https://cran.r-project.org/web/packages/chron/index.html)
 #	data.table: Extension of data.frame (https://cran.r-project.org/web/packages/data.table/data.table.pdf)
@@ -100,20 +62,6 @@ RUN mkdir /srv/src/samtools && \
 #		sh Configure -de && \
 #		make && 
 #		make install &&
-
-##### ADD KNIFE Data Dependencies
-#Note: The directory itself is not copied, just its contents.
-#If <dest> does not end with a trailing slash, it will be considered a regular file and the contents of <src> will be written at <dest>.
-#If <dest> doesn’t exist, it is created along with all missing directories in its path.
-#ADD /${circularRNApipeline_Standalone} ${DATA}/${circularRNApipeline_Standalone}/
-
-#### ADD MACHETE Data Dependencies
-#ADD HG19exons. Location of HG19exons was formerly called PICKLEDIR
-#ADD /${HG19exons} ${DATA}/${HG19exons}/
-
-#ADD REG_INDEL_INDICES
-#RUN mkdir ${DATA}/${IndelIndices}
-#ADD /${IndelIndices} ${DATA}/${IndelIndices}/
 
 ENTRYPOINT []
 LABEL version="1.0" description="Detects gene fusions"
