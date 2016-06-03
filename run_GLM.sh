@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/sh
 
 #  run_GLM.sh
 #  
@@ -8,23 +8,21 @@
 CircularPipelineDir=${1} #directory that contains circReads, orig, logs, etc
 FJDir=${2}
 INSTALLDIR=${3}
-TASK_ID=${4}
 
-
-if [ $# -ge 5 ]
+if [ $# -ge 4 ]
 then
-OUTPUTDIR=${5}
+OUTPUTDIR=${4}
 else
-OUTPUTDIR=${2}/reports/glmReports/
+OUTPUTDIR=${2}reports/glmReports/
 fi
 echo $OUTPUTDIR
 
-STEMFILE=${2}/StemList.txt
-STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
+STEMFILE=${2}StemList.txt
+STEM=`awk 'FNR == '${SLURM_ARRAY_TASK_ID}' {print $1}' ${STEMFILE}`
 #STEM=SRR1594021
 
-REG_INPUTDIR=${1}/circReads/ids/
-FJ_INPUTDIR=${2}/GLM_classInput/
+REG_INPUTDIR=${1}circReads/ids/
+FJ_INPUTDIR=${2}GLM_classInput/
 
 mkdir -p ${OUTPUTDIR}
 
@@ -48,8 +46,8 @@ do
 FJIndel_input=${file}
 done
 
-#ml load R/3.0.2
-Rscript ${INSTALLDIR}/GLM_script_Apr29_UseIndel.r ${FJ_input} ${reg_class_input} ${STEM} ${OUTPUTDIR} ${RegIndel_input} ${FJIndel_input}
-#Rscript ${INSTALLDIR}GLM_script.r ${FJ_input} ${class_input} ${RegIndel_input} ${FJIndel_input} ${STEM} ${OUTPUTDIR}
+ml load R/3.0.2
+Rscript ${INSTALLDIR}GLM_script_UseIndel.r ${FJ_input} ${reg_class_input} ${STEM} ${OUTPUTDIR} ${RegIndel_input} ${FJIndel_input}
+#GLM script most recently updated May 6 -- copied from /scratch/PI/horence/julia/MACHETE/GLM_script_May6_UseIndel.r
 
-echo "run_GLM.sh complete for ${STEM} -- check ${OUTPUTDIR}/*${STEM}* for Far Junction GLM outputs" >> ${2}/MasterError.txt
+echo "run_GLM.sh complete for ${STEM} -- check ${OUTPUTDIR}/*${STEM}* for Far Junction GLM outputs" >> ${2}MasterError.txt
