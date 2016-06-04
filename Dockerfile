@@ -61,7 +61,7 @@ RUN mkdir /srv/src/samtools && \
 #		make && 
 #		make install &&
 
-RUN git clone https://github.com/ericff/KNIFE.git /srv/software/knife
+RUN git clone https://github.com/ericff/eknife.git /srv/software/knife
 RUN git clone https://github.com/ericff/MACHETE.git /srv/software/machete
 
 ENTRYPOINT []
