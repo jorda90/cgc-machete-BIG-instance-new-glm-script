@@ -4,8 +4,6 @@ FROM nathankw/centos6
 #The directories /srv/src and /srv/software are created in the base image. 
 MAINTAINER Nathaniel Watson <nathankw@stanford.edu>
 RUN yum install -y bc 
-RUN git clone https://github.com/ericff/KNIFE.git /srv/software/knife
-RUN git clone https://github.com/nathankw/MACHETE.git /srv/software/machete
 #INSTALL TBB (Threading Building Blocks) from Intel.
 # Can be used when intalling Bowtie1 and Bowtie2 in order to use TBB over pthreads for managing parallel processes.
 #RUN mkdir /srv/src/TBB && \
@@ -62,6 +60,9 @@ RUN mkdir /srv/src/samtools && \
 #		sh Configure -de && \
 #		make && 
 #		make install &&
+
+RUN git clone https://github.com/ericff/KNIFE.git /srv/software/knife
+RUN git clone https://github.com/ericff/MACHETE.git /srv/software/machete
 
 ENTRYPOINT []
 LABEL version="1.0" description="Detects gene fusions"
