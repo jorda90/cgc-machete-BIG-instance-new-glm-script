@@ -321,18 +321,18 @@ return(junctionPredictions)
 ######## END FUNCTIONS, BEGIN WORK #########
 
 ## command line inputs
-user.input=1
+user.input=0
 no.indel.classfile=1
 
 ################# USER INPUT SHOULD BE 1 if it is used in an automated script
-use.tcga.ov=1
+use.tcga.ov=0
 use.uconn=0
 use.normal.breast=0
 use.cml=0
 use.ews=0
 use.simulated=0
 use.ewsh5=0
-use.seqc=1
+use.seqc=0
 ## GILLIAN
 
 
@@ -382,13 +382,13 @@ print (paste("outputdir", output_dir))
 
 max.iter=2 ## iterations for glm
 
-if (user.input==0){
+if (user.input==1){
   output_dir=""}
 
 use.indels=1
 use.fusion=1
 
-if (user.input==0){ ## THIS IF LOOP ONLY if we want to bypass command line inputs!
+if (user.input==1){ ## THIS IF LOOP ONLY if we want to bypass command line inputs!
 
 ## GILLIAN
 if(use.ewsh5==1){
