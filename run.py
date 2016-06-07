@@ -255,10 +255,14 @@ checkProcesses(processes)
 
 ## If there is homology between a FarJunctions fasta sequence and the genome or transcriptome or a linear junction or circular junction, then the fusion read is less likely.  Alignments of the FarJunctions fasta sequences to the KNIFE reference indices, genome, transcriptome, linear junctions (reg), and scrambled junctions (junc) are created with two different bowtie parameters.  Bad juncs will align to genome/transcriptome/junc/reg but good juncs will not align. These are just aligning the FJ Fasta to the bad juncs with various alignment parameters. Any junctions aligning to here will eventually be tagged as "BadFJ=1" in the final reports whereas if junctions don't align, they will receive a "BadFJ=0" in the final reports.
 
-genomeIndex = os.path.join(CIRCREF,"hg19_genome")
-transcriptomeIndex = os.path.join(CIRCREF,"hg19_transcriptome")
-regIndex = os.path.join(CIRCREF,"hg19_junctions_reg")
-juncIndex = os.path.join(CIRCREF,"hg19_junctions_scrambled")
+# genomeIndex = os.path.join(CIRCREF,"hg19_genome")
+# transcriptomeIndex = os.path.join(CIRCREF,"hg19_transcriptome")
+# regIndex = os.path.join(CIRCREF,"hg19_junctions_reg")
+# juncIndex = os.path.join(CIRCREF,"hg19_junctions_scrambled")
+genomeIndex = CIRCREF
+transcriptomeIndex = CIRCREF
+regIndex = CIRCREF
+juncIndex = CIRCREF
 
 # for BadFJ we Align FarJunc fasta file to the above indices with the following bowtie parameters:
 # A minimum alignment score corresponding to 4 mismatches per 100 base pairs, no N ceiling, and a prohibitive read gap penalty that disallows any read gaps in the fasta sequence or the reference index.  Alignments are found in <FJDir>/BadFJ/<STEM>/<STEM>_BadFJto<ReferenceIndex>.sam.
