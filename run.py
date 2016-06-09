@@ -635,7 +635,16 @@ checkProcesses(processes)
 #    circInputFile= open( glob.glob(glmDir+"*"+args.stem+"*circJuncProbs.txt")[0], mode="rU")
 #    IndexError: list index out of range
 # ## Append linear junctions GLM report with anomalies, indels
-# #AddIndelstolinearGLM.sh calls the python script KNIFEglmReportsForMachete.py.  This script parses circular and linear glmReports.  For the linear glmReports from KNIFE, the script collects any junctions where 1) the two exons from the linear report are from different genes or 2) the posterior probability is >0.9.  It adds on the rate of anomaly reads and indels to the reports and feeds them into FJDir/reports/AppendedReports.  For ciruclar reports, the script collects any junctions where the posterior probability is <0.9, appends the "Decoy" rate, and feeds the reports into FJDir/reports/Appended reports.
+# # AddIndelstolinearGLM.sh calls the python script
+# # KNIFEglmReportsForMachete.py.  This script parses circular and linear
+# # glmReports.  For the linear glmReports from KNIFE, the script collects
+# # any junctions where 1) the two exons from the linear report are from
+# # different genes or 2) the posterior probability is >0.9.  It adds on
+# # the rate of anomaly reads and indels to the reports and feeds them
+# # into FJDir/reports/AppendedReports.  For ciruclar reports, the script
+# # collects any junctions where the posterior probability is <0.9,
+# # appends the "Decoy" rate, and feeds the reports into
+# # FJDir/reports/Appended reports.
 # ## The purpose of this script is to place all reports in a single directory for the user.
 # #j17_id
 # print("Appending linearJuncs GLM report")
