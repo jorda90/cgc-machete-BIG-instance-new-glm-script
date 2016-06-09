@@ -631,20 +631,22 @@ for index in range(1,NUM_FILES + 1):
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
 
-
-## Append linear junctions GLM report with anomalies, indels
-#AddIndelstolinearGLM.sh calls the python script KNIFEglmReportsForMachete.py.  This script parses circular and linear glmReports.  For the linear glmReports from KNIFE, the script collects any junctions where 1) the two exons from the linear report are from different genes or 2) the posterior probability is >0.9.  It adds on the rate of anomaly reads and indels to the reports and feeds them into FJDir/reports/AppendedReports.  For ciruclar reports, the script collects any junctions where the posterior probability is <0.9, appends the "Decoy" rate, and feeds the reports into FJDir/reports/Appended reports.
-## The purpose of this script is to place all reports in a single directory for the user.
-#j17_id
-print("Appending linearJuncs GLM report")
-processes = {}
-for index in range(1,NUM_FILES + 1):
-	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_17AppendRegGLM.txt"),"w")
-	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_17AppendGLM.txt"),"w")
-	cmd = "{MACHETE}/AddIndelstolinearGLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {MACHETE} {index}".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
-	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
-	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
-checkProcesses(processes)
+# Commenting this out for now- June 8 2016; had an error of this type:
+#    circInputFile= open( glob.glob(glmDir+"*"+args.stem+"*circJuncProbs.txt")[0], mode="rU")
+#    IndexError: list index out of range
+# ## Append linear junctions GLM report with anomalies, indels
+# #AddIndelstolinearGLM.sh calls the python script KNIFEglmReportsForMachete.py.  This script parses circular and linear glmReports.  For the linear glmReports from KNIFE, the script collects any junctions where 1) the two exons from the linear report are from different genes or 2) the posterior probability is >0.9.  It adds on the rate of anomaly reads and indels to the reports and feeds them into FJDir/reports/AppendedReports.  For ciruclar reports, the script collects any junctions where the posterior probability is <0.9, appends the "Decoy" rate, and feeds the reports into FJDir/reports/Appended reports.
+# ## The purpose of this script is to place all reports in a single directory for the user.
+# #j17_id
+# print("Appending linearJuncs GLM report")
+# processes = {}
+# for index in range(1,NUM_FILES + 1):
+# 	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_17AppendRegGLM.txt"),"w")
+# 	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_17AppendGLM.txt"),"w")
+# 	cmd = "{MACHETE}/AddIndelstolinearGLM.sh {CIRCPIPE_DIR} {OUTPUT_DIR} {MACHETE} {index}".format(MACHETE=MACHETE,CIRCPIPE_DIR=CIRCPIPE_DIR,OUTPUT_DIR=OUTPUT_DIR,index=index)
+# 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+# 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+# checkProcesses(processes)
 ##
 ####
 
