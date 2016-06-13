@@ -660,7 +660,7 @@ checkProcesses(processes)
 ####
 
 # The AppendNaiveRept.sh shell calls the AppendNaiveRept.py script.  This reads in the IndelsHistogram, BadFJ and BadFJ_ver2 files, and GLM report results and outputs all the results into a single file in /FJDir/reports/AppendedReports/<STEM>_naive_report_Appended.txt
-j15_id
+# j15_id
 print("append naive rpt")
 processes = {}
 for index in range(1,NUM_FILES + 1):
