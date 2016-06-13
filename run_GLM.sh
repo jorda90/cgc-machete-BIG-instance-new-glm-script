@@ -16,9 +16,9 @@ TASK_ID=${4}
 if [ $# -ge 5 ]
 then
 OUTPUTDIR=${5}
-# else
+else
 OUTPUTDIR=${2}/reports/glmReports/
-# fi
+fi
 echo $OUTPUTDIR
 
 STEMFILE=${2}/StemList.txt
