@@ -659,14 +659,14 @@ checkProcesses(processes)
 ##
 ####
 
-### The AppendNaiveRept.sh shell calls the AppendNaiveRept.py script.  This reads in the IndelsHistogram, BadFJ and BadFJ_ver2 files, and GLM report results and outputs all the results into a single file in /FJDir/reports/AppendedReports/<STEM>_naive_report_Appended.txt
-#j15_id
+# The AppendNaiveRept.sh shell calls the AppendNaiveRept.py script.  This reads in the IndelsHistogram, BadFJ and BadFJ_ver2 files, and GLM report results and outputs all the results into a single file in /FJDir/reports/AppendedReports/<STEM>_naive_report_Appended.txt
+j15_id
 print("append naive rpt")
 processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_14AppendRpt.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_14AppendRpt.txt"),"w")
-	cmd = "{MACHETE}/AppendNaiveRept.sh {OUTPUT_DIR} {GLM_DIR} {MACHETE} {OUTPUT_DIR}reports/glmReports {index}".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,GLM_DIR=GLM_DIR,index=index)
+	cmd = "{MACHETE}/AppendNaiveRept.sh {OUTPUT_DIR} {GLM_DIR} {MACHETE} {OUTPUT_DIR}/reports/glmReports {index}".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,GLM_DIR=GLM_DIR,index=index)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)

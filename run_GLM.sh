@@ -4,15 +4,18 @@
 #  
 #
 #  Created by Gillian Hsieh on 3/3/16.
+#  Eric changing in accordance with 
+#   https://github.com/nathankw/MACHETE/commit/fca6af9caec3ecc0dafcdf03879093355f5f4d48
+#  on jun 13 2016
 #
 CircularPipelineDir=${1} #directory that contains circReads, orig, logs, etc
 FJDir=${2}
 INSTALLDIR=${3}
 TASK_ID=${4}
 
-# if [ $# -ge 4 ]
-# then
-# OUTPUTDIR=${4}
+if [ $# -ge 5 ]
+then
+OUTPUTDIR=${5}
 # else
 OUTPUTDIR=${2}/reports/glmReports/
 # fi
