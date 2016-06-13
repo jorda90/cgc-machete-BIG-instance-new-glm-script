@@ -11,7 +11,7 @@ FJDir=${2}
 TASK_ID=${3}
 
 echo "SORTINGDIR: ${SORTINGDIR}"
-echo "FJDIR: ${FJDIR}"
+echo "FJDir: ${FJDir}"
 echo "TASK_ID: ${TASK_ID}"
 
 
