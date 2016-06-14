@@ -30,10 +30,13 @@ def checkProcesses(popenDict):
 		cmd = popenDict[popen]['cmd']
 		stdout = popenDict[popen]['stdout']
 		stdout.close()
-		stderr = popenDict[popen]['stderr']
+ 		stdout_text = open(stdout.name,'r').read()
+ 		stderr = popenDict[popen]['stderr']
 		stderr.close()
+        stderr_text = open(stderr.name,'r').read()
 		if retcode:
-			raise Exception("Command '{cmd}' failed with return code {retcode}. Log files are {stdout} and {stderr}.".format(cmd=cmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
+            raise Exception("Command '{cmd}' failed with return code {retcode}. Log files are {stdout} and {stderr}. {stdout} contains {stdout_text}. {stderr} contains {stderr_text}.".format(cmd=cmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name,stdout_text=stdout_text,stderr_text=stderr_text))
+			# raise Exception("Command '{cmd}' failed with return code {retcode}. Log files are {stdout} and {stderr}.".format(cmd=cmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
 
 description = "Required args: --circpipe-dir, --output-dir, --hg19Exons, --reg-indel-indices, and --circref-dir."
 
