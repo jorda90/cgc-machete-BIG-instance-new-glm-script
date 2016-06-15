@@ -236,7 +236,7 @@ print (names(junctionPredictions))
 ########### adding quantiles of p_predicted
 n.quant=2
 for (qi in 1:n.quant){
-my_quantiles = my_reads[,round(10*quantile(p_predicted/(1+is.anomaly* p_predicted),probs=c(0:n.quant)/n.quant)[qi])/10,by=junction]
+my_quantiles = my_reads[,round(10*quantile(p_predicted/(1+is.anomaly* p_predicted),probs=c(0:n.quant)/n.quant,na.rm=TRUE)[qi])/10,by=junction]
 
 # merge into junctionPredictions
 print (head(my_quantiles))
@@ -588,10 +588,10 @@ null=linear_reads$p_predicted
 ### ASSIGN p value: 
 linearJunctionPredictionsForModels = predictNewClassP(linear_reads, null)
 
-pGoodThresh=quantile(linearJunctionPredictionsForModels$p_value,prob=.8)    
+pGoodThresh=quantile(linearJunctionPredictionsForModels$p_value,prob=.8,na.rm=TRUE)    
 good.linear=linearJunctionPredictionsForModels[p_value> pGoodThresh,]
     
-pBadThresh=quantile(linearJunctionPredictionsForModels$p_value,prob=.2)    
+pBadThresh=quantile(linearJunctionPredictionsForModels$p_value,prob=.2,na.rm=TRUE)    
 bad.linear=linearJunctionPredictionsForModels[p_value< pBadThresh,]    
 #####################################
 
@@ -815,7 +815,7 @@ consolidated_linear=data.table(unique(consolidated_linear))
 write.table(unique(consolidated_linear), linearwanomaly_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
 
 ## 
-my.null.quantiles=quantile(linear_reads$p_predicted,probs=c(0:10)/10)
+my.null.quantiles=quantile(linear_reads$p_predicted,probs=c(0:10)/10,na.rm=TRUE)
 ## refer fusions to these quantiles; 'falsely called' vs. true will be fraction of linears (conservative estimate) ; error at this quantile can be evaluated. 
 
 write.table(unique(fusionJunctionPredictions[order(-p_predicted),]),fusion_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
