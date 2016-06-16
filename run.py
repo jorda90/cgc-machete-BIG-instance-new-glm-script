@@ -23,8 +23,8 @@ def checkProcesses(popenDict):
 	Args     : popenDict - A dict. whose keys are subprocess.Popen instances. The value of a key is also a dict. that has the following
 								keys: 'stdout', 'stderr', and 'cmd'.
 	"""
-    for popen in popenDict:
-        popen.communicate() #hangs until job finishes
+	for popen in popenDict:
+		popen.communicate() #hangs until job finishes
 	for popen in popenDict:
 		retcode = popen.returncode
 		cmd = popenDict[popen]['cmd']
