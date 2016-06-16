@@ -22,6 +22,7 @@ STEM=`awk 'FNR == '${TASK_ID}' {print $1}' ${STEMFILE}`
 
 ##ml load python/2.7.5
 
+# Removing last argument in call of AppendNaiveRept.py so that it will just use the default directory as previously index directory was I think sent without full path -EF
 # python ${INSTALLDIR}/AppendNaiveRept.py -f ${1} -g ${2} -s ${STEM} -G ${4} ${OUTPUTDIR}
 python ${INSTALLDIR}/AppendNaiveRept.py -f ${1} -g ${2} -s ${STEM} -G ${4}
 
