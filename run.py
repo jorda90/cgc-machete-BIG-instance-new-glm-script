@@ -253,7 +253,7 @@ for i in range(1,25):
 		stderr = open(os.path.join(LOG_DIR,str(i) + "_err_5makefasta.txt"),"w")
 		cmd = "{MACHETE}/makeJunctions.sh {EXONS} {OUTPUT_DIR} {i} {MACHETE} {index}".format(MACHETE=MACHETE,EXONS=EXONS,OUTPUT_DIR=OUTPUT_DIR,i=i,index=index)
 		print(cmd)
-        popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 	checkProcesses(processes)
 
