@@ -338,6 +338,7 @@ for i in range(1,NUM_FILES + 1):
 		stderr = open(os.path.join(BadFJStemDir,"err.txt"),"w")
 		fasta = os.path.join(FASTADIR,"{STEM}_FarJunctions.fa".format(STEM=STEM))
 		cmd = "{MACHETE}/BowtieFJAligner.batch.sh \"{BOWTIEPARAM}\" {genomeIndex} {fasta} {BadFJtoGenomeFile}".format(MACHETE=MACHETE,BOWTIEPARAM=BOWTIEPARAM,genomeIndex=genomeIndex,fasta=fasta,BadFJtoGenomeFile=BadFJtoGenomeFile)
+		print(cmd)
 		print("BadFJ to genome")
 		popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 		stdout.close()
