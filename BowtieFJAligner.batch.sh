@@ -14,7 +14,7 @@ BOWTIEOUTPUTDIR=${4}
 
 #module load bowtie/2.2.4
 
-echo "bowtie2 ${1} -x ${2} -U ${3} -S ${4}$"
+echo "bowtie2 ${1} -x ${2} -U ${3} -S ${4}"
 
 # Removing ${5} from call 
 bowtie2 ${1} -x ${2} -U ${3} -S ${4}
