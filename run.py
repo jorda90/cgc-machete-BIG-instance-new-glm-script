@@ -173,18 +173,6 @@ for index in range(1,NUM_FILES + 1):
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
 #
-
-# Adding this for debugging, to be removed:
-genomefiles = sorted(glob.glob(ORIG_DIR + "/genome/sorted*.sam"))
-regfiles = sorted(glob.glob(ORIG_DIR + "/reg/sorted*.sam"))
-print("genomefiles:", genomefiles)
-print("regfiles:", regfiles)
-masterErrorfile = os.path.join(OUTPUT_DIR,"MasterError.txt") 
-for file in genomefiles:
-    subprocess.call("head -n 10 {file} >> {masterErrorfile}".format(file=file, masterErrorfile=masterErrorfile), shell =True)
-for file in regfiles:
-    subprocess.call("head -n 10 {file} >> {masterErrorfile}".format(file=file, masterErrorfile=masterErrorfile), shell =True)
-
 #
 ## finding mismatched paired end reads
 ## The shell PEfinder.sh takes the KNIFE alignment directory (OrigDir -1 ), the output directory (FJDir -2 ), the distance beyond which the user would consider alignments to be "discordant" (BP_distance -3 ), and the MACHETE installation directory (4) and calls a python script PEfinder_genomeAndReg_ENCODE.py.
