@@ -6,6 +6,11 @@ import glob
 from argparse import ArgumentParser
 import pdb
 
+# NOTE THAT AS OF JULY 2016, THIS VERSION ASSUMES THAT THERE IS ONLY ON
+#   PAIR OF FASTQ FILES. SMALL CHANGES COULD FIX THIS PRESUMABLY
+#   BY ADDING LOOPS OVER FILES TO 
+#   THE CHANGES (MARKED BELOW) MADE IN JULY 2016.
+
 MACHETE = os.path.dirname(__file__)
 # goal is to create distant paired ends using my paired end finder
 # then use output to generate far junction library
@@ -263,7 +268,7 @@ for index in range(1,NUM_FILES + 1):
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
 
-
+# Added July 5 2016
 # align unaligned files to the FJ bowtie index
 # This calls the shell AlignUnalignedtoFJ.  It takes the inputs of the MACHETEoutput directory and the KNIFE unaligned reads (KNIFEdir/orig/unaligned/).  It calls on Bowtie2 to align the unaligned reads for each <STEM> to the Far Junctions bowtie indices located at FJDir/BowtieIndex/<STEM>/<STEM>_FJ_Index.   Bowtie2 parameters include alignment score with mismatch rate of ~4/100 bases, prohibiting read gaps in the reference or given sequence, and N ceiling = read length (e.g. a read consisting of 100% N's would be discarded).  The aligned reads are output to /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam.  Reads that continue to fail to align are output to /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq.
 #
@@ -282,6 +287,44 @@ checkProcesses(processes)
 #
 #
 
+# Added July 5 2016
+# ASSUMES THERE IS ONLY ONE PAIR OF FASTQ FILES!
+i=1
+stdout = open(os.path.join(LOG_DIR,str(i) + "assumingonefile_out_getStem.txt"),"w")
+stderr = open(os.path.join(LOG_DIR,str(i) + "assumingonefile_err_getStem.txt"),"w")
+stemCmd = "awk 'FNR == '{i}' {{print $1}}' {StemFile}".format(i=i,StemFile=StemFile)
+popen = subprocess.Popen(stemCmd,stdout=stdout,stderr=stderr,shell=True)
+popen.communicate()	
+stdout.close()
+stderr.close()
+retcode = popen.returncode
+if retcode:
+    raise Exception("Command {cmd} failed with return code {retcode}. stdout is {stdout} and stderr is {stderr}.".format(cmd=stemCmd,retcode=retcode,stdout=stdout.name,stderr=stderr.name))
+
+STEM_ASSUMING_ONE_FILE = open(stdout.name,'r').read().strip()
+
+print("STEM_ASSUMING_ONE_FILE is:" + STEM_ASSUMING_ONE_FILE + "\n")
+
+with open(logfile, 'a') as ff:
+    ff.write("STEM_ASSUMING_ONE_FILE is:" + STEM_ASSUMING_ONE_FILE + "\n")
+
+fasta_stem_dir = os.path.join(FASTADIR,STEM_ASSUMING_ONE_FILE)
+
+
+posschrfjfiles = os.listdir(fasta_stem_dir)
+
+chrfjfiles = [os.path.join(fasta_stem_dir,x) for x in posschrfjfiles if (re.search(pattern='chr.*FarJunctions.fa', string=x))]
+
+with open(logfile, 'a') as ff:
+    for thisfile in chrfjfiles:
+        cmd = "head -n 10000 " + thisfile + " > tmpfile249.txt"
+        print(cmd)
+        ff.write(cmd + "\n")
+        subprocess.call(cmd,shell=True, stdout=ff, stderr=ff)
+        cmd2 = "cat tmpfile249.txt > " + thisfile
+        print(cmd2)
+        ff.write(cmd2 + "\n")
+        subprocess.call(cmd2,shell=True, stdout=ff, stderr=ff)
 
 
 ## If there is homology between a FarJunctions fasta sequence and the genome or transcriptome or a linear junction or circular junction, then the fusion read is less likely.  Alignments of the FarJunctions fasta sequences to the KNIFE reference indices, genome, transcriptome, linear junctions (reg), and scrambled junctions (junc) are created with two different bowtie parameters.  Bad juncs will align to genome/transcriptome/junc/reg but good juncs will not align. These are just aligning the FJ Fasta to the bad juncs with various alignment parameters. Any junctions aligning to here will eventually be tagged as "BadFJ=1" in the final reports whereas if junctions don't align, they will receive a "BadFJ=0" in the final reports.
