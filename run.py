@@ -305,9 +305,6 @@ STEM_ASSUMING_ONE_FILE = open(stdout.name,'r').read().strip()
 
 print("STEM_ASSUMING_ONE_FILE is:" + STEM_ASSUMING_ONE_FILE + "\n")
 
-with open(logfile, 'a') as ff:
-    ff.write("STEM_ASSUMING_ONE_FILE is:" + STEM_ASSUMING_ONE_FILE + "\n")
-
 fasta_stem_dir = os.path.join(FASTADIR,STEM_ASSUMING_ONE_FILE)
 
 
@@ -315,16 +312,17 @@ posschrfjfiles = os.listdir(fasta_stem_dir)
 
 chrfjfiles = [os.path.join(fasta_stem_dir,x) for x in posschrfjfiles if (re.search(pattern='chr.*FarJunctions.fa', string=x))]
 
-with open(logfile, 'a') as ff:
-    for thisfile in chrfjfiles:
-        cmd = "head -n 10000 " + thisfile + " > tmpfile249.txt"
-        print(cmd)
-        ff.write(cmd + "\n")
-        subprocess.call(cmd,shell=True, stdout=ff, stderr=ff)
-        cmd2 = "cat tmpfile249.txt > " + thisfile
-        print(cmd2)
-        ff.write(cmd2 + "\n")
-        subprocess.call(cmd2,shell=True, stdout=ff, stderr=ff)
+stdout = open(os.path.join(LOG_DIR,"headfiles_out_getStem.txt"),"w")
+stderr = open(os.path.join(LOG_DIR,"headfiles_err_getStem.txt"),"w")
+for thisfile in chrfjfiles:
+    cmd = "head -n 10000 " + thisfile + " > tmpfile249.txt"
+    print(cmd)
+    subprocess.call(cmd,shell=True, stdout=stdout, stderr=stderr)
+    cmd2 = "cat tmpfile249.txt > " + thisfile
+    print(cmd2)
+    subprocess.call(cmd2,shell=True, stdout=stdout, stderr=stderr)
+stdout.close()
+stderr.close()
 
 
 ## If there is homology between a FarJunctions fasta sequence and the genome or transcriptome or a linear junction or circular junction, then the fusion read is less likely.  Alignments of the FarJunctions fasta sequences to the KNIFE reference indices, genome, transcriptome, linear junctions (reg), and scrambled junctions (junc) are created with two different bowtie parameters.  Bad juncs will align to genome/transcriptome/junc/reg but good juncs will not align. These are just aligning the FJ Fasta to the bad juncs with various alignment parameters. Any junctions aligning to here will eventually be tagged as "BadFJ=1" in the final reports whereas if junctions don't align, they will receive a "BadFJ=0" in the final reports.
