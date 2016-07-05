@@ -263,6 +263,27 @@ for index in range(1,NUM_FILES + 1):
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
 
+
+# align unaligned files to the FJ bowtie index
+# This calls the shell AlignUnalignedtoFJ.  It takes the inputs of the MACHETEoutput directory and the KNIFE unaligned reads (KNIFEdir/orig/unaligned/).  It calls on Bowtie2 to align the unaligned reads for each <STEM> to the Far Junctions bowtie indices located at FJDir/BowtieIndex/<STEM>/<STEM>_FJ_Index.   Bowtie2 parameters include alignment score with mismatch rate of ~4/100 bases, prohibiting read gaps in the reference or given sequence, and N ceiling = read length (e.g. a read consisting of 100% N's would be discarded).  The aligned reads are output to /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam.  Reads that continue to fail to align are output to /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq.
+#
+#j8_id
+print("align unaligned reads to FJ index:  - check for /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam and /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq")
+processes = {}
+for index in range(1,NUM_FILES + 1):
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_7newAlignFJ.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_7newAlignFJ.txt"),"w")
+	cmd = "{MACHETE}/AlignUnalignedtoFJ.sh {OUTPUT_DIR} {ORIG_DIR} {index}".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR,index=index)
+	print(cmd)
+	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+checkProcesses(processes)
+
+#
+#
+
+
+
 ## If there is homology between a FarJunctions fasta sequence and the genome or transcriptome or a linear junction or circular junction, then the fusion read is less likely.  Alignments of the FarJunctions fasta sequences to the KNIFE reference indices, genome, transcriptome, linear junctions (reg), and scrambled junctions (junc) are created with two different bowtie parameters.  Bad juncs will align to genome/transcriptome/junc/reg but good juncs will not align. These are just aligning the FJ Fasta to the bad juncs with various alignment parameters. Any junctions aligning to here will eventually be tagged as "BadFJ=1" in the final reports whereas if junctions don't align, they will receive a "BadFJ=0" in the final reports.
 
 genomeIndex = os.path.join(CIRCREF,"hg19_genome")
