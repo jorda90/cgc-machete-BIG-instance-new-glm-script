@@ -5,6 +5,7 @@ import subprocess
 import glob
 from argparse import ArgumentParser
 import pdb
+import re
 
 # NOTE THAT AS OF JULY 2016, THIS VERSION ASSUMES THAT THERE IS ONLY ON
 #   PAIR OF FASTQ FILES. SMALL CHANGES COULD FIX THIS PRESUMABLY
