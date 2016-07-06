@@ -257,7 +257,7 @@ for i in range(1,25):
 ## For each experiment, fasta files are generated for each chromosome separately as above.  The Bowtie2 call converts these into binary index files so the chromosome specific files must be concatenated into a single fasta file before generation of this index.
 ## The script linkfastafiles.sh uses linux to concatenate the <FJDir>/fasta/<STEM>/<STEM>_chr1,2,3,...,X,Y_FarJunctions.fa into a single large fasta <FJDir>/fasta/<STEM>_FarJunctions.fa.
 ## The second step of the linkfastafiles.sh calls Bowtie to build the Far Junctions bowtie index named <FJDir>/BowtieIndex/<STEM>/<STEM>_FJ_Index
-#j6a_id
+#j6a_id this is B1
 print("make FJ bowtie indices for each experiment")
 processes = {}
 for index in range(1,NUM_FILES + 1):
@@ -273,13 +273,36 @@ checkProcesses(processes)
 # align unaligned files to the FJ bowtie index
 # This calls the shell AlignUnalignedtoFJ.  It takes the inputs of the MACHETEoutput directory and the KNIFE unaligned reads (KNIFEdir/orig/unaligned/).  It calls on Bowtie2 to align the unaligned reads for each <STEM> to the Far Junctions bowtie indices located at FJDir/BowtieIndex/<STEM>/<STEM>_FJ_Index.   Bowtie2 parameters include alignment score with mismatch rate of ~4/100 bases, prohibiting read gaps in the reference or given sequence, and N ceiling = read length (e.g. a read consisting of 100% N's would be discarded).  The aligned reads are output to /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam.  Reads that continue to fail to align are output to /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq.
 #
-#j8_id
+#j8new_id this is B2
 print("align unaligned reads to FJ index:  - check for /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam and /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq")
+print("this align of unaligned reads was added in july 2016; it takes place before the original one")
 processes = {}
 for index in range(1,NUM_FILES + 1):
 	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_7newAlignFJ.txt"),"w")
 	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_7newAlignFJ.txt"),"w")
 	cmd = "{MACHETE}/AlignUnalignedtoFJ.sh {OUTPUT_DIR} {ORIG_DIR} {index}".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR,index=index)
+	print(cmd)
+	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+checkProcesses(processes)
+
+#
+#
+###make FJ naive report
+## FarJuncNaiveReport.sh is a shell script that calls the python script FarJuncNaiveReport.py to generate the "Naive Reports".  Inputs include the MACHETE output directory, paths to the KNIFE alignment files, the amount a read should overlap the junction in order to be considered a "true" junctional alignment, and the MACHETE installation directory.
+## see the FarJuncNaiveReport.sh for more info on FarJuncNaiveReport.py and details about how alignments are selected as "true" or "false", and how the a p value is calculated.
+## The rate of true or anomaly alignments and p values are output to FJDir/reports/<STEM>_naive_report.txt.  Specific read ID's are also tracked and information on them can be found in FJDir/reports/IDs_<STEM>.txt.
+
+
+#
+# Added July 5 2016
+#j9new_id this is C
+print("make naive rpt, new as of jul 2016, earlier than previous one ")
+processes = {}
+for index in range(1,NUM_FILES + 1):
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_8newNaiveRpt.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_8NnewaiveRpt.txt"),"w")
+	cmd = "{MACHETE}/FarJuncNaiveReport.sh {OUTPUT_DIR} {ORIG_DIR} {NUMBASESAROUNDJUNC} {MACHETE} {index}".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR,NUMBASESAROUNDJUNC=NUMBASESAROUNDJUNC,index=index)
 	print(cmd)
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
@@ -324,6 +347,41 @@ for thisfile in chrfjfiles:
     subprocess.call(cmd2,shell=True, stdout=stdout, stderr=stderr)
 stdout.close()
 stderr.close()
+
+# Added July 5 2016
+##make single FJ fasta from all the fastas and then call bowtie indexer
+##
+## For each experiment, fasta files are generated for each chromosome separately as above.  The Bowtie2 call converts these into binary index files so the chromosome specific files must be concatenated into a single fasta file before generation of this index.
+## The script linkfastafiles.sh uses linux to concatenate the <FJDir>/fasta/<STEM>/<STEM>_chr1,2,3,...,X,Y_FarJunctions.fa into a single large fasta <FJDir>/fasta/<STEM>_FarJunctions.fa.
+## The second step of the linkfastafiles.sh calls Bowtie to build the Far Junctions bowtie index named <FJDir>/BowtieIndex/<STEM>/<STEM>_FJ_Index
+#j6anew_id- this is B1
+print("make FJ bowtie indices for each experiment")
+processes = {}
+for index in range(1,NUM_FILES + 1):
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_5secondnewFJIndexing.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_5secondnewFJIndexing.txt"),"w")
+	print(cmd)
+	cmd = "{MACHETE}/linkfastafiles.sh {OUTPUT_DIR} {index}".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,index=index)
+	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+checkProcesses(processes)
+
+# Added July 5 2016
+# align unaligned files to the FJ bowtie index
+# This calls the shell AlignUnalignedtoFJ.  It takes the inputs of the MACHETEoutput directory and the KNIFE unaligned reads (KNIFEdir/orig/unaligned/).  It calls on Bowtie2 to align the unaligned reads for each <STEM> to the Far Junctions bowtie indices located at FJDir/BowtieIndex/<STEM>/<STEM>_FJ_Index.   Bowtie2 parameters include alignment score with mismatch rate of ~4/100 bases, prohibiting read gaps in the reference or given sequence, and N ceiling = read length (e.g. a read consisting of 100% N's would be discarded).  The aligned reads are output to /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam.  Reads that continue to fail to align are output to /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq.
+#
+#j8new_id this is B2
+print("align unaligned reads to FJ index:  - check for /FJDir/FarJunctionAlignments/<STEM>/unaligned_<STEM>_R1/2.sam and /FJDir/FarJuncSecondary/<STEM>/still_unaligned_<STEM>_R1/2.fq")
+print("this align of unaligned reads was added in july 2016; it takes place before the original one")
+processes = {}
+for index in range(1,NUM_FILES + 1):
+	stdout = open(os.path.join(LOG_DIR,str(index) + "_out_7secondnewAlignFJ.txt"),"w")
+	stderr = open(os.path.join(LOG_DIR,str(index) + "_err_7secondnewAlignFJ.txt"),"w")
+	cmd = "{MACHETE}/AlignUnalignedtoFJ.sh {OUTPUT_DIR} {ORIG_DIR} {index}".format(MACHETE=MACHETE,OUTPUT_DIR=OUTPUT_DIR,ORIG_DIR=ORIG_DIR,index=index)
+	print(cmd)
+	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
+	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
+checkProcesses(processes)
 
 
 ## If there is homology between a FarJunctions fasta sequence and the genome or transcriptome or a linear junction or circular junction, then the fusion read is less likely.  Alignments of the FarJunctions fasta sequences to the KNIFE reference indices, genome, transcriptome, linear junctions (reg), and scrambled junctions (junc) are created with two different bowtie parameters.  Bad juncs will align to genome/transcriptome/junc/reg but good juncs will not align. These are just aligning the FJ Fasta to the bad juncs with various alignment parameters. Any junctions aligning to here will eventually be tagged as "BadFJ=1" in the final reports whereas if junctions don't align, they will receive a "BadFJ=0" in the final reports.
@@ -530,6 +588,7 @@ for index in range(1,NUM_FILES + 1):
 	popen = subprocess.Popen(cmd,stdout=stdout,stderr=stderr,shell=True)
 	processes[popen] = {"stdout":stdout,"stderr":stderr,"cmd":cmd}
 checkProcesses(processes)
+
 
 #
 #
