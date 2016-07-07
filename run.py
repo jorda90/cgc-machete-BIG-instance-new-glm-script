@@ -332,19 +332,17 @@ print("STEM_ASSUMING_ONE_FILE is:" + STEM_ASSUMING_ONE_FILE + "\n")
 fasta_stem_dir = os.path.join(FASTADIR,STEM_ASSUMING_ONE_FILE)
 
 
-posschrfjfiles = os.listdir(fasta_stem_dir)
+## Now call parse_to_remove_FJ.py
 
-chrfjfiles = [os.path.join(fasta_stem_dir,x) for x in posschrfjfiles if (re.search(pattern='chr.*FarJunctions.fa', string=x))]
+stdout = open(os.path.join(LOG_DIR,"parse_out.txt"),"w")
+stderr = open(os.path.join(LOG_DIR,"parse_err.txt"),"w")
 
-stdout = open(os.path.join(LOG_DIR,"headfiles_out_getStem.txt"),"w")
-stderr = open(os.path.join(LOG_DIR,"headfiles_err_getStem.txt"),"w")
-for thisfile in chrfjfiles:
-    cmd = "head -n 10000 " + thisfile + " > tmpfile249.txt"
-    print(cmd)
-    subprocess.call(cmd,shell=True, stdout=stdout, stderr=stderr)
-    cmd2 = "cat tmpfile249.txt > " + thisfile
-    print(cmd2)
-    subprocess.call(cmd2,shell=True, stdout=stdout, stderr=stderr)
+cmd="python {MACHETE}/parse_to_remove_FJ.py --stem {STEM} --outputdir {OUTPUT_DIR}".format(MACHETE=MACHETE, STEM=STEM, OUTPUT_DIR=OUTPUT_DIR)
+
+print(cmd)
+
+subprocess.call(cmd, shell=True, stdout=stdout, stderr=stderr)
+
 stdout.close()
 stderr.close()
 
