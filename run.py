@@ -337,7 +337,7 @@ fasta_stem_dir = os.path.join(FASTADIR,STEM_ASSUMING_ONE_FILE)
 stdout = open(os.path.join(LOG_DIR,"parse_out.txt"),"w")
 stderr = open(os.path.join(LOG_DIR,"parse_err.txt"),"w")
 
-cmd="python {MACHETE}/parse_to_remove_FJ.py --stem {STEM} --outputdir {OUTPUT_DIR}".format(MACHETE=MACHETE, STEM=STEM, OUTPUT_DIR=OUTPUT_DIR)
+cmd="python {MACHETE}/parse_to_remove_FJ.py --stem {STEM_ASSUMING_ONE_FILE} --outputdir {OUTPUT_DIR}".format(MACHETE=MACHETE, STEM=STEM, OUTPUT_DIR=OUTPUT_DIR)
 
 print(cmd)
 
