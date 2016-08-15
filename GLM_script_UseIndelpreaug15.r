@@ -1,4 +1,4 @@
- #!/usr/bin/env Rscript
+#!/usr/bin/env Rscript
 #   PFA_VMEM="200000"  # this is used for glm reports, needed for srun
 # DT[, c("z","u","v"):=NULL] #remove several columns at once
 
@@ -19,9 +19,10 @@ getOverlapForTrimmed <- function(x, juncMidpoint=150){
     } else if (as.numeric(x["pos"]) + as.numeric(x["readLen"]) - 1 < juncMidpoint + 1){
       overlap = 0
     } else {
-      overlap = min(30,as.numeric(x["pos"]) + as.numeric(x["readLen"]) - juncMidpoint, juncMidpoint + 1 - as.numeric(x["pos"]))
-}
-
+      overlap = min(as.numeric(x["pos"]) + as.numeric(x["readLen"]) - juncMidpoint,
+      juncMidpoint + 1 - as.numeric(x["pos"]))
+    }
+  
   return(overlap)
 }
 
@@ -52,8 +53,8 @@ if(nrow(dt) > 0){
 # the input file is just the file output by the circularRNApipeline under /ids
 processClassInput <- function(classFile,my.names){
 
-cats = fread(classFile,  sep="\t", nrows=500000)
-# cats = fread(classFile,  sep="\t")
+#cats = fread(classFile,  sep="\t", nrows=1000000)
+cats = fread(classFile,  sep="\t")
 ############################################################
 if ( my.names!="none"){
 names(cats)=my.names
@@ -321,8 +322,8 @@ return(junctionPredictions)
 
 ## command line inputs
 user.input=0
-
 no.indel.classfile=1
+
 ################# USER INPUT SHOULD BE 1 if it is used in an automated script
 use.tcga.ov=0
 use.uconn=0
@@ -332,23 +333,10 @@ use.ews=0
 use.simulated=0
 use.ewsh5=0
 use.seqc=0
-
-use.uconn=1
+## GILLIAN
 
 
 ########## Gillian, note the 'indels vs indel' in the normal breast names and the 'no 1' ######################
-if (use.uconn==1){
-parentdir="/scratch/PI/horence/gillian/CML_UConn/circpipe_K562/circReads/ids/"
-srr="SRR3192409"
-class_input = paste(parentdir,srr,"_1__output.txt",sep="")
-reg_indel_class_input = paste(parentdir,srr,"_output_RegIndel.txt",sep="")
-
-parentdir="/scratch/PI/horence//rob/spachete_outputs/CML_8_13_16-36_flank/SRR3192409/GLM_classInput/"
-FJ_indel_class_input = paste(parentdir,srr,"_output_FJIndels.txt",sep="")
-fusion_class_input = paste(parentdir,srr,"_1__output_FJ.txt",sep="")
-output_dir=""
-sampletest=paste("spork_uconn_glmtest_",srr,sep="")
-}
 if (use.normal.breast==1){
 parentdir="/scratch/PI/horence/gillian/normal_breast/circpipe/circReads/ids/"
 srr="SRR1027190"
@@ -441,19 +429,15 @@ reg_indel_class_input = paste(parentdir,srr,"_output_RegIndel.txt",sep="")
 output_dir=""
 sampletest=paste("CML",cmli,sep="")
 }
-
 if (use.ews==1){
 srr="SRR1594025" #
 srr="SRR1594022"
-print ("using ews")
 parentdir="/scratch/PI/horence/gillian/Ewing/circpipe/circReads/ids/"
-
-class_input = paste(parentdir,srr,"_1__output.txt",sep="")
-reg_indel_class_input = paste(parentdir,srr,"_output_RegIndel.txt",sep="")
-
-parentdir="/scratch/PI/horence/gillian/Ewing/FarJunc_Jun16/GLM_classInput/"
 fusion_class_input = paste(parentdir,srr,"_1__output_FJ.txt",sep="")
+class_input = paste(parentdir,srr,"_1__output.txt",sep="")
+
 FJ_indel_class_input = paste(parentdir,srr,"_output_FJIndels.txt",sep="")
+reg_indel_class_input = paste(parentdir,srr,"_output_RegIndel.txt",sep="")
 output_dir=""
 
 output_dir=""
@@ -477,7 +461,6 @@ sampletest=paste("normal_breast_windel_",srr,sep="")
 ## define output class files
 glm_out = paste(output_dir,srr,"_DATAOUT",sep="")
 anomaly_glm_out = paste(output_dir,srr,"_AnomalyDATAOUT",sep="")
-
 indel_glm_out = paste(output_dir,srr,"_IndelDATAOUT",sep="")
 linear_juncp_out = paste(output_dir,srr,"_LINEARJUNCP_OUT",sep="")
 circ_juncp_out = paste(output_dir,srr,"_CIRC_JUNCP_OUT",sep="")
@@ -509,36 +492,36 @@ myClassesFJIndel = processClassInput(FJ_indel_class_input,names(myClasses))
 
 print(paste("class info processed", dim(myClasses)))
 
-circ_reads = myClasses[(tolower(class) %like% 'circ'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2,strand),]
+circ_reads = myClasses[(tolower(class) %like% 'circ'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2),]
 circ_reads = addDerivedFields(circ_reads, 1)
 circ_reads [, is.anomaly:=0] ## this is not an anomaly type so WILL NOT have p value ajustment
 
 print ("finished circ_reads")
 
-decoy_reads = myClasses[(tolower(class) %like% 'decoy'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2,strand),]
+decoy_reads = myClasses[(tolower(class) %like% 'decoy'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2),]
 decoy_reads = addDerivedFields(decoy_reads, 0)
 decoy_reads [, is.anomaly:=1] ######## this IS an anomaly type 
 
 print ("finished decoy_reads")
 ## was
-linear_reads = myClasses[(tolower(class) %like% 'linear'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2,strand),]
+linear_reads = myClasses[(tolower(class) %like% 'linear'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2),]
 linear_reads = addDerivedFields(linear_reads, 1)
 linear_reads [, is.anomaly:=0] ## this is not an anomaly type so WILL NOT have p value ajustment
 
 print ("finished linear_reads")
 
-anomaly_reads = myClasses[(tolower(class) %like% 'anomaly'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2,strand),]
+anomaly_reads = myClasses[(tolower(class) %like% 'anomaly'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2),]
 anomaly_reads [, is.anomaly:=1]
 print ("finished anomaly_reads")
 
 if (use.indels==1){
 ## in analogy, we first define all indels, then assign good and bad
 ## we will use anomaly field as a general term for 'anomaly mapping and indel'
-reg_indel_reads = myClassesRegIndel[, list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2,strand),]
+reg_indel_reads = myClassesRegIndel[, list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2),]
 reg_indel_reads [, is.anomaly:=1]
 print ("Finished reg indels")
 
-FJ_indel_reads = myClassesFJIndel[, list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2,strand),]
+FJ_indel_reads = myClassesFJIndel[, list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2),]
 FJ_indel_reads [, is.anomaly:=1]
 FJ_indel_reads = addDerivedFields(FJ_indel_reads, 1)
 print ("Finished FJ indels")
@@ -547,12 +530,12 @@ print ("Finished FJ indels")
 if (use.fusion==1){
 
 #was na.omit
-fusion_reads = (myClassesFusion[(tolower(class) %like% 'fjgood'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2,strand),])
+fusion_reads = (myClassesFusion[(tolower(class) %like% 'fjgood'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2),])
 fusion_reads = addDerivedFields(fusion_reads, 1)
 fusion_reads [, is.anomaly:=0] ## this is not an anomaly type so WILL NOT have p value ajustment
 
 print ("ANOMALY fusions defined as FJ bad-- of any variety")
-anomaly_fusion_reads = (myClassesFusion[(tolower(class) %like% 'fjbad'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2,strand),]) # GILLIAN, pls comment here on what FJ bad is for the sake of documentation
+anomaly_fusion_reads = (myClassesFusion[(tolower(class) %like% 'fjbad'), list(id, pos, qual, aScore, numN, readLen, junction, qualR2,aScoreR2, numNR2, readLenR2),]) # GILLIAN, pls comment here on what FJ bad is for the sake of documentation
 
 anomaly_fusion_reads = addDerivedFields(anomaly_fusion_reads, 1)
 anomaly_fusion_reads [, is.anomaly:=1] ## this is not an anomaly type so WILL NOT have p value ajustment
@@ -810,15 +793,7 @@ consolidated_fusion_windel[,logsum.x:=NULL]
 consolidated_fusion_windel[,logsum.y:=NULL]
 }
 
-## fusion_reads merging
-## JS ADD 8/14
-fusion_reads[strand!=0,maxNegStrandOverlap:=max(overlap),by=junction]
-fusion_reads[strand==0,maxPosStrandOverlap:=max(overlap),by=junction]
-out_fusions=merge(merge(consolidated_fusion_windel, unique(fusion_reads[strand==0,list(junction,maxPosStrandOverlap)]),by="junction",add.x=TRUE), unique(fusion_reads[strand!=0,list(junction,maxNegStrandOverlap)]),by="junction",add.x=TRUE)
-
-
-
-write.table(unique(out_fusions)[order(-junction_cdf.y),], fusionwanomaly_and_indel_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
+write.table(unique(consolidated_fusion_windel)[order(-junction_cdf.y),], fusionwanomaly_and_indel_juncp_out, row.names=FALSE, quote=FALSE, sep="\t")
 cir.verbose=1
 ####################################################################################
 ####################################################################################
